@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="إدارة الإيجارات" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>إدارة الإيجارات</title>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1 id="appTitle">إدارة الإيجارات</h1>
+      <p id="subtitle">بيتا Aladdin و Ahmad</p>
+    </div>
+    <button id="langBtn" class="secondary">English</button>
+  </header>
+
+  <main>
+    <section id="dashboard" class="page active">
+      <div class="stats">
+        <div class="card stat"><span id="statRoomsLabel">الغرف</span><strong id="statRooms">0</strong></div>
+        <div class="card stat"><span id="statOccupiedLabel">المشغولة</span><strong id="statOccupied">0</strong></div>
+        <div class="card stat"><span id="statVacantLabel">الشاغرة</span><strong id="statVacant">0</strong></div>
+        <div class="card stat"><span id="statIncomeLabel">إيجار شهري</span><strong id="statIncome">$0</strong></div>
+      </div>
+      <div class="card">
+        <div class="section-head">
+          <h2 id="alertsTitle">التنبيهات</h2>
+        </div>
+        <div id="alertsList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="rooms" class="page">
+      <div class="toolbar">
+        <div class="segmented" id="houseTabs">
+          <button data-house="Aladdin" class="active">Aladdin</button>
+          <button data-house="Ahmad">Ahmad</button>
+        </div>
+        <button id="addRoomBtn" class="primary">+ غرفة</button>
+      </div>
+      <input id="roomSearch" class="search" placeholder="بحث بالغرفة أو المستأجر" />
+      <div id="roomsGrid" class="rooms-grid"></div>
+    </section>
+
+    <section id="tenants" class="page">
+      <div class="section-head">
+        <h2 id="tenantsTitle">المستأجرون الحاليون</h2>
+        <button id="addTenantBtn" class="primary">+ مستأجر</button>
+      </div>
+      <input id="tenantSearch" class="search" placeholder="بحث بالاسم أو الهاتف" />
+      <div id="tenantList" class="list"></div>
+    </section>
+
+    <section id="payments" class="page">
+      <div class="section-head">
+        <h2 id="paymentsTitle">الدفعات</h2>
+        <button id="addPaymentBtn" class="primary">+ دفعة</button>
+      </div>
+      <div id="paymentsList" class="list"></div>
+    </section>
+
+    <section id="archive" class="page">
+      <div class="section-head">
+        <h2 id="archiveTitle">المستأجرون السابقون</h2>
+      </div>
+      <div id="archiveList" class="list"></div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="card">
+        <h2 id="backupTitle">النسخ الاحتياطي</h2>
+        <p id="backupText">صدّر نسخة من جميع البيانات واحفظها في تطبيق الملفات أو iCloud Drive.</p>
+        <div class="stack">
+          <button id="exportBtn" class="primary full">تصدير نسخة احتياطية</button>
+          <label class="secondary full file-label">
+            <span id="importLabel">استعادة نسخة احتياطية</span>
+            <input id="importInput" type="file" accept=".json,application/json" hidden />
+          </label>
+        </div>
+      </div>
+      <div class="card danger-card">
+        <h2 id="dangerTitle">إعادة ضبط التطبيق</h2>
+        <button id="resetBtn" class="danger full">حذف جميع البيانات</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button data-page="dashboard" class="active"><span>⌂</span><small id="navDashboard">الرئيسية</small></button>
+    <button data-page="rooms"><span>▦</span><small id="navRooms">الغرف</small></button>
+    <button data-page="tenants"><span>♙</span><small id="navTenants">المستأجرون</small></button>
+    <button data-page="payments"><span>$</span><small id="navPayments">الدفعات</small></button>
+    <button data-page="archive"><span>◷</span><small id="navArchive">الأرشيف</small></button>
+    <button data-page="settings"><span>⚙</span><small id="navSettings">الإعدادات</small></button>
+  </nav>
+
+  <dialog id="roomDialog">
+    <form method="dialog" id="roomForm">
+      <h3 id="roomDialogTitle">إضافة غرفة</h3>
+      <input type="hidden" id="roomId" />
+      <label><span id="roomHouseLabel">البيت</span>
+        <select id="roomHouse"><option>Aladdin</option><option>Ahmad</option></select>
+      </label>
+      <label><span id="roomNameLabel">اسم الغرفة</span>
+        <input id="roomName" required />
+      </label>
+      <label><span id="roomRentLabel">الإيجار الشهري</span>
+        <input id="roomRent" type="number" min="0" step="0.01" required />
+      </label>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary" id="cancelRoom">إلغاء</button>
+        <button value="default" class="primary" id="saveRoom">حفظ</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="tenantDialog">
+    <form method="dialog" id="tenantForm">
+      <h3 id="tenantDialogTitle">إضافة مستأجر</h3>
+      <input type="hidden" id="tenantId" />
+      <label><span id="tenantNameLabel">الاسم</span><input id="tenantName" required /></label>
+      <label><span id="tenantPhoneLabel">الهاتف</span><input id="tenantPhone" type="tel" /></label>
+      <label><span id="tenantEmailLabel">البريد الإلكتروني</span><input id="tenantEmail" type="email" /></label>
+      <label><span id="tenantRoomLabel">الغرفة</span><select id="tenantRoom" required></select></label>
+      <label><span id="tenantStartLabel">بداية الإيجار</span><input id="tenantStart" type="date" required /></label>
+      <label><span id="tenantEndLabel">نهاية الإيجار</span><input id="tenantEnd" type="date" /></label>
+      <label><span id="tenantDepositLabel">التأمين</span><input id="tenantDeposit" type="number" min="0" step="0.01" /></label>
+      <label><span id="tenantNotesLabel">ملاحظات</span><textarea id="tenantNotes"></textarea></label>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary" id="cancelTenant">إلغاء</button>
+        <button value="default" class="primary" id="saveTenant">حفظ</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="paymentDialog">
+    <form method="dialog" id="paymentForm">
+      <h3 id="paymentDialogTitle">إضافة دفعة</h3>
+      <label><span id="paymentTenantLabel">المستأجر</span><select id="paymentTenant" required></select></label>
+      <label><span id="paymentAmountLabel">المبلغ</span><input id="paymentAmount" type="number" min="0" step="0.01" required /></label>
+      <label><span id="paymentDateLabel">التاريخ</span><input id="paymentDate" type="date" required /></label>
+      <label><span id="paymentMethodLabel">طريقة الدفع</span>
+        <select id="paymentMethod">
+          <option value="Cash">Cash</option><option value="Zelle">Zelle</option>
+          <option value="Venmo">Venmo</option><option value="Check">Check</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+      <label><span id="paymentNoteLabel">ملاحظة</span><input id="paymentNote" /></label>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary" id="cancelPayment">إلغاء</button>
+        <button value="default" class="primary" id="savePayment">حفظ</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
