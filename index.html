@@ -16,7 +16,7 @@
   <header class="topbar">
     <div>
       <h1 id="appTitle">إدارة الإيجارات</h1>
-      <p id="subtitle">بيتا Aladdin و Ahmad</p>
+      <p id="subtitle">Aladdin و Ahmad</p>
     </div>
     <button id="langBtn" class="secondary">English</button>
   </header>
@@ -115,7 +115,7 @@
         <input id="roomRent" type="number" min="0" step="0.01" required />
       </label>
       <div class="dialog-actions">
-        <button value="cancel" class="secondary" id="cancelRoom">إلغاء</button>
+        <button type="button" class="secondary" id="cancelRoom">إلغاء</button>
         <button value="default" class="primary" id="saveRoom">حفظ</button>
       </div>
     </form>
@@ -132,9 +132,10 @@
       <label><span id="tenantStartLabel">بداية الإيجار</span><input id="tenantStart" type="date" required /></label>
       <label><span id="tenantEndLabel">نهاية الإيجار</span><input id="tenantEnd" type="date" /></label>
       <label><span id="tenantDepositLabel">التأمين</span><input id="tenantDeposit" type="number" min="0" step="0.01" /></label>
+      <label><span id="tenantDueDayLabel">يوم استحقاق الإيجار شهريًا</span><input id="tenantDueDay" type="number" min="1" max="31" /></label>
       <label><span id="tenantNotesLabel">ملاحظات</span><textarea id="tenantNotes"></textarea></label>
       <div class="dialog-actions">
-        <button value="cancel" class="secondary" id="cancelTenant">إلغاء</button>
+        <button type="button" class="secondary" id="cancelTenant">إلغاء</button>
         <button value="default" class="primary" id="saveTenant">حفظ</button>
       </div>
     </form>
@@ -155,7 +156,7 @@
       </label>
       <label><span id="paymentNoteLabel">ملاحظة</span><input id="paymentNote" /></label>
       <div class="dialog-actions">
-        <button value="cancel" class="secondary" id="cancelPayment">إلغاء</button>
+        <button type="button" class="secondary" id="cancelPayment">إلغاء</button>
         <button value="default" class="primary" id="savePayment">حفظ</button>
       </div>
     </form>
