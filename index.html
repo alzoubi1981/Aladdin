@@ -73,6 +73,32 @@
       <div id="archiveList" class="list"></div>
     </section>
 
+
+    <section id="ledgers" class="page">
+      <div class="section-head">
+        <h2 id="ledgersTitle">الجداول</h2>
+        <button id="addLedgerEntryBtn" class="primary">+ إضافة سجل</button>
+      </div>
+      <div class="segmented ledger-tabs" id="ledgerTabs">
+        <button data-ledger="Aladdin" class="active">Aladdin</button>
+        <button data-ledger="Ahmad">Ahmad</button>
+      </div>
+      <div class="table-wrap card">
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th id="ledgerNameHead">Name</th>
+              <th id="ledgerAmountHead">Amount</th>
+              <th id="ledgerDateHead">Date</th>
+              <th id="ledgerNoteHead">Note</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
     <section id="settings" class="page">
       <div class="card">
         <h2 id="backupTitle">النسخ الاحتياطي</h2>
@@ -98,6 +124,7 @@
     <button data-page="tenants"><span>♙</span><small id="navTenants">المستأجرون</small></button>
     <button data-page="payments"><span>$</span><small id="navPayments">الدفعات</small></button>
     <button data-page="archive"><span>◷</span><small id="navArchive">الأرشيف</small></button>
+    <button data-page="ledgers"><span>▤</span><small id="navLedgers">الجداول</small></button>
     <button data-page="settings"><span>⚙</span><small id="navSettings">الإعدادات</small></button>
   </nav>
 
@@ -158,6 +185,25 @@
       <div class="dialog-actions">
         <button type="button" class="secondary" id="cancelPayment">إلغاء</button>
         <button value="default" class="primary" id="savePayment">حفظ</button>
+      </div>
+    </form>
+  </dialog>
+
+
+  <dialog id="ledgerDialog">
+    <form method="dialog" id="ledgerForm">
+      <h3 id="ledgerDialogTitle">إضافة سجل</h3>
+      <input type="hidden" id="ledgerEntryId" />
+      <label><span id="ledgerOwnerLabel">الجدول</span>
+        <select id="ledgerOwner"><option>Aladdin</option><option>Ahmad</option></select>
+      </label>
+      <label><span id="ledgerNameLabel">Name</span><input id="ledgerName" required /></label>
+      <label><span id="ledgerAmountLabel">Amount</span><input id="ledgerAmount" type="number" min="0" step="0.01" required /></label>
+      <label><span id="ledgerDateLabel">Date</span><input id="ledgerDate" type="date" required /></label>
+      <label><span id="ledgerNoteLabel">Note</span><textarea id="ledgerNote"></textarea></label>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" id="cancelLedger">إلغاء</button>
+        <button value="default" class="primary" id="saveLedger">حفظ</button>
       </div>
     </form>
   </dialog>

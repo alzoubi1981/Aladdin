@@ -72,6 +72,36 @@ function renderPayments(){
 function renderArchive(){
  $("#archiveList").innerHTML=state.archived.length?[...state.archived].reverse().map(x=>`<div class="item"><h3>${x.name}</h3><div class="meta">${x.house||""} • ${x.roomName||""}<br>${tr("period")}: ${fmtDate(x.start)} — ${fmtDate(x.end)}</div></div>`).join(""):`<div class="empty">${tr("empty")}</div>`;
 }
+
+function renderLedgers(){
+  const rows=(state.ledgers||[]).filter(x=>x.owner===activeLedger).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  $("#ledgerTableBody").innerHTML=rows.length?rows.map(x=>`<tr>
+    <td>${esc(x.name||"")}</td>
+    <td>${money(Number(x.amount||0))}</td>
+    <td>${x.date||""}</td>
+    <td>${esc(x.note||"")}</td>
+    <td class="actions">
+      <button class="secondary small" onclick="editLedger('${x.id}')">✎</button>
+      <button class="danger small" onclick="deleteLedger('${x.id}')">×</button>
+    </td>
+  </tr>`).join(""):`<tr><td colspan="5" class="empty">${state.lang==="ar"?"لا توجد سجلات":"No records"}</td></tr>`;
+}
+function openLedgerDialog(id=""){
+  const x=(state.ledgers||[]).find(v=>v.id===id);
+  $("#ledgerEntryId").value=x?.id||"";
+  $("#ledgerOwner").value=x?.owner||activeLedger;
+  $("#ledgerName").value=x?.name||"";
+  $("#ledgerAmount").value=x?.amount||"";
+  $("#ledgerDate").value=x?.date||new Date().toISOString().slice(0,10);
+  $("#ledgerNote").value=x?.note||"";
+  $("#ledgerDialog").showModal();
+}
+window.editLedger=id=>openLedgerDialog(id);
+window.deleteLedger=id=>{
+  if(!confirm(state.lang==="ar"?"هل تريد حذف هذا السجل؟":"Delete this record?"))return;
+  state.ledgers=state.ledgers.filter(x=>x.id!==id);save();renderLedgers();
+};
+
 function renderAll(){renderText();renderDashboard();renderRooms();renderTenants();renderPayments();renderArchive()}
 function bindDynamic(){
  $$(".edit-room").forEach(b=>b.onclick=()=>openRoom(b.dataset.id));
@@ -106,6 +136,33 @@ $("#resetBtn").onclick=()=>{if(confirm(tr("confirmDelete"))){state=defaultState(
 $("#cancelRoom").onclick=()=>$("#roomDialog").close();
 $("#cancelTenant").onclick=()=>$("#tenantDialog").close();
 $("#cancelPayment").onclick=()=>$("#paymentDialog").close();
+
+
+$("#addLedgerEntryBtn").onclick=()=>openLedgerDialog();
+$("#cancelLedger").onclick=()=>$("#ledgerDialog").close();
+$("#ledgerTabs").onclick=e=>{
+  const b=e.target.closest("button[data-ledger]");if(!b)return;
+  activeLedger=b.dataset.ledger;
+  $$("#ledgerTabs button").forEach(x=>x.classList.toggle("active",x===b));
+  renderLedgers();
+};
+$("#ledgerForm").onsubmit=e=>{
+  e.preventDefault();
+  const id=$("#ledgerEntryId").value||uid();
+  const entry={
+    id,
+    owner:$("#ledgerOwner").value,
+    name:$("#ledgerName").value.trim(),
+    amount:Number($("#ledgerAmount").value||0),
+    date:$("#ledgerDate").value,
+    note:$("#ledgerNote").value.trim()
+  };
+  const i=state.ledgers.findIndex(x=>x.id===id);
+  if(i>=0)state.ledgers[i]=entry;else state.ledgers.push(entry);
+  activeLedger=entry.owner;
+  $$("#ledgerTabs button").forEach(x=>x.classList.toggle("active",x.dataset.ledger===activeLedger));
+  save();renderLedgers();$("#ledgerDialog").close();
+};
 
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 renderAll();
