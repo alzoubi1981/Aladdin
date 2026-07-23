@@ -8,12 +8,17 @@ const defaultState = () => ({
   ],
   tenants: [],
   archived: [],
-  payments: []
+  payments: [],
+  ledgers: []
 });
 let state = load();
+state.ledgers = state.ledgers || [];
+let activeLedger = "Aladdin";
 function load(){ try{ return JSON.parse(localStorage.getItem(DB_KEY)) || defaultState(); }catch{return defaultState();}}
 function save(){ localStorage.setItem(DB_KEY,JSON.stringify(state)); renderAll(); }
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const uid=()=>crypto.randomUUID();
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const t={
  ar:{appTitle:"إدارة الإيجارات",subtitle:"Aladdin و Ahmad",rooms:"الغرف",occupied:"المشغولة",vacant:"الشاغرة",income:"إيجار شهري",alerts:"التنبيهات",tenants:"المستأجرون الحاليون",payments:"الدفعات",archive:"المستأجرون السابقون",backup:"النسخ الاحتياطي",backupText:"صدّر نسخة من جميع البيانات واحفظها في تطبيق الملفات أو iCloud Drive.",export:"تصدير نسخة احتياطية",import:"استعادة نسخة احتياطية",danger:"إعادة ضبط التطبيق",reset:"حذف جميع البيانات",nav:["الرئيسية","الغرف","المستأجرون","الدفعات","الأرشيف","الإعدادات"],addRoom:"+ غرفة",addTenant:"+ مستأجر",addPayment:"+ دفعة",searchRoom:"بحث بالغرفة أو المستأجر",searchTenant:"بحث بالاسم أو الهاتف",empty:"لا توجد بيانات",occupiedWord:"مشغولة",vacantWord:"شاغرة",rent:"الإيجار",tenant:"المستأجر",phone:"الهاتف",period:"الفترة",edit:"تعديل",archiveBtn:"أرشفة",delete:"حذف",paid:"دفع",confirmArchive:"هذه الغرفة مشغولة. سيتم أرشفة المستأجر الحالي واستبداله. هل تريد المتابعة؟",confirmDelete:"هل أنت متأكد؟",saved:"تم الحفظ",archivedMsg:"تمت الأرشفة",deleted:"تم الحذف",imported:"تمت استعادة البيانات",resetDone:"تم حذف جميع البيانات",expiry:"ينتهي عقده خلال",days:"يوم",overdue:"انتهى العقد",noAlerts:"لا توجد تنبيهات حالياً",rentTomorrow:"موعد دفع الإيجار غداً",lease30:"تبقى 30 يوماً على نهاية العقد"},
  en:{appTitle:"Rental Manager",subtitle:"Aladdin & Ahmad",rooms:"Rooms",occupied:"Occupied",vacant:"Vacant",income:"Monthly Rent",alerts:"Alerts",tenants:"Current Tenants",payments:"Payments",archive:"Past Tenants",backup:"Backup",backupText:"Export all data and save it to Files or iCloud Drive.",export:"Export Backup",import:"Restore Backup",danger:"Reset App",reset:"Delete All Data",nav:["Home","Rooms","Tenants","Payments","Archive","Settings"],addRoom:"+ Room",addTenant:"+ Tenant",addPayment:"+ Payment",searchRoom:"Search room or tenant",searchTenant:"Search name or phone",empty:"No data",occupiedWord:"Occupied",vacantWord:"Vacant",rent:"Rent",tenant:"Tenant",phone:"Phone",period:"Period",edit:"Edit",archiveBtn:"Archive",delete:"Delete",paid:"Payment",confirmArchive:"This room is occupied. The current tenant will be archived and replaced. Continue?",confirmDelete:"Are you sure?",saved:"Saved",archivedMsg:"Archived",deleted:"Deleted",imported:"Backup restored",resetDone:"All data deleted",expiry:"Lease ends in",days:"days",overdue:"Lease expired",noAlerts:"No alerts now",rentTomorrow:"Rent is due tomorrow",lease30:"30 days remain on the lease"}
@@ -30,7 +35,11 @@ function renderText(){
  $("#statRoomsLabel").textContent=tr("rooms");$("#statOccupiedLabel").textContent=tr("occupied");$("#statVacantLabel").textContent=tr("vacant");$("#statIncomeLabel").textContent=tr("income");$("#alertsTitle").textContent=tr("alerts");
  $("#tenantsTitle").textContent=tr("tenants");$("#paymentsTitle").textContent=tr("payments");$("#archiveTitle").textContent=tr("archive");$("#backupTitle").textContent=tr("backup");$("#backupText").textContent=tr("backupText");
  $("#exportBtn").textContent=tr("export");$("#importLabel").textContent=tr("import");$("#dangerTitle").textContent=tr("danger");$("#resetBtn").textContent=tr("reset");
- [$("#navDashboard"),$("#navRooms"),$("#navTenants"),$("#navPayments"),$("#navArchive"),$("#navSettings")].forEach((e,i)=>e.textContent=tr("nav")[i]);
+ [$("#navDashboard"),$("#navRooms"),$("#navTenants"),$("#navPayments"),$("#navArchive")].forEach((e,i)=>e.textContent=tr("nav")[i]);
+ if($("#navLedgers")) $("#navLedgers").textContent=state.lang==="ar"?"الجداول":"Tables";
+ $("#navSettings").textContent=tr("nav")[5];
+ if($("#ledgersTitle")) $("#ledgersTitle").textContent=state.lang==="ar"?"الجداول":"Tables";
+ if($("#addLedgerEntryBtn")) $("#addLedgerEntryBtn").textContent=state.lang==="ar"?"+ إضافة سجل":"+ Add Record";
  $("#addRoomBtn").textContent=tr("addRoom");$("#addTenantBtn").textContent=tr("addTenant");$("#addPaymentBtn").textContent=tr("addPayment");$("#roomSearch").placeholder=tr("searchRoom");$("#tenantSearch").placeholder=tr("searchTenant");
 }
 function renderDashboard(){
@@ -102,7 +111,7 @@ window.deleteLedger=id=>{
   state.ledgers=state.ledgers.filter(x=>x.id!==id);save();renderLedgers();
 };
 
-function renderAll(){renderText();renderDashboard();renderRooms();renderTenants();renderPayments();renderArchive()}
+function renderAll(){renderText();renderDashboard();renderRooms();renderTenants();renderPayments();renderArchive();renderLedgers()}
 function bindDynamic(){
  $$(".edit-room").forEach(b=>b.onclick=()=>openRoom(b.dataset.id));
  $$(".add-to-room").forEach(b=>b.onclick=()=>openTenant(null,b.dataset.id));
@@ -148,20 +157,23 @@ $("#ledgerTabs").onclick=e=>{
 };
 $("#ledgerForm").onsubmit=e=>{
   e.preventDefault();
-  const id=$("#ledgerEntryId").value||uid();
+  state.ledgers = state.ledgers || [];
+  const id=$("#ledgerEntryId").value || uid();
   const entry={
     id,
-    owner:$("#ledgerOwner").value,
+    owner:$("#ledgerOwner").value || activeLedger,
     name:$("#ledgerName").value.trim(),
-    amount:Number($("#ledgerAmount").value||0),
+    amount:Number($("#ledgerAmount").value || 0),
     date:$("#ledgerDate").value,
     note:$("#ledgerNote").value.trim()
   };
   const i=state.ledgers.findIndex(x=>x.id===id);
-  if(i>=0)state.ledgers[i]=entry;else state.ledgers.push(entry);
+  if(i>=0) state.ledgers[i]=entry;
+  else state.ledgers.push(entry);
   activeLedger=entry.owner;
-  $$("#ledgerTabs button").forEach(x=>x.classList.toggle("active",x.dataset.ledger===activeLedger));
-  save();renderLedgers();$("#ledgerDialog").close();
+  $("#ledgerDialog").close();
+  save();
+  toast(tr("saved"));
 };
 
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
