@@ -1,0 +1,9 @@
+رفع V8.6 إلى GitHub
+
+1) ارفع جميع الملفات الموجودة داخل هذا المجلد إلى جذر مستودع Aladdin.
+2) يجب أن يبقى ملف التنبيهات في هذا المسار بالضبط:
+   .github/workflows/telegram-reminders.yml
+3) لا ترفع telegram-reminders.yml إلى جذر المستودع.
+4) في Windows فعّل: View > Show > Hidden items حتى يظهر مجلد .github.
+5) بعد الرفع افتح GitHub > Actions وتأكد أن Telegram rental reminders ظهر في القائمة.
+6) يلزم أيضًا إضافة FIREBASE_SERVICE_ACCOUNT و FIREBASE_DOCUMENT_ID إلى GitHub Secrets، إضافة إلى TELEGRAM_BOT_TOKEN و TELEGRAM_CHAT_ID.

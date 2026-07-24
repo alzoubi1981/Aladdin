@@ -1,4 +1,4 @@
-إعداد رسائل تيليغرام — V8.5
+إعداد رسائل تيليغرام — V8.6
 
 1) أنشئ بوتًا من @BotFather في Telegram واحفظ Bot Token.
 2) أرسل أي رسالة إلى البوت.
@@ -15,7 +15,7 @@
    TELEGRAM_CHAT_ID = رقم المحادثة
    FIREBASE_SERVICE_ACCOUNT = محتوى ملف JSON كاملًا
    FIREBASE_DOCUMENT_ID = aladdin-rental-manager
-7) ارفع جميع ملفات V8.5، بما فيها مجلد .github ومجلد scripts وpackage.json.
+7) ارفع جميع ملفات V8.6، بما فيها مجلد .github ومجلد scripts وpackage.json.
 8) افتح تبويب Actions، اختر Telegram rental reminders، ثم Run workflow للاختبار.
 
 ملاحظات:

@@ -32,7 +32,7 @@ dialog{border:0;border-radius:22px;padding:0;width:min(92vw,520px);box-shadow:0 
 @media(max-width:760px){.finance-grid{grid-template-columns:repeat(2,1fr)}.owner-summary{grid-template-columns:1fr}.owner-numbers{grid-template-columns:repeat(2,1fr)}.details-grid{grid-template-columns:1fr}.detail-wide{grid-column:auto}.mini-stats{grid-template-columns:1fr}main{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}.card-grid{grid-template-columns:1fr}.hero{padding:20px}.hero h2{font-size:1.15rem}.topbar{padding:13px 15px}.topbar h1{font-size:1.05rem}.sync-badge{display:none}}
 
 </style>
-  <title>إدارة الإيجارات V8.5</title>
+  <title>إدارة الإيجارات V8.6</title>
 
 <script>
 window.addEventListener("error", function(e){
@@ -52,7 +52,7 @@ window.addEventListener("error", function(e){
   <div>
     <div class="eyebrow">Rental Manager</div>
     <h1>إدارة الإيجارات</h1>
-    <p>Aladdin & Ahmad · V8.5</p>
+    <p>Aladdin & Ahmad · V8.6</p>
   </div>
   <div class="header-actions">
     <span id="syncBadge" class="sync-badge local">حفظ محلي</span>
@@ -287,8 +287,8 @@ window.addEventListener("error", function(e){
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const KEY="rental-manager-v85";
-const LEGACY_KEYS=["rental-manager-v5","rental-manager-v8","rental-manager-v82"]; 
+const KEY="rental-manager-v86";
+const LEGACY_KEYS=["rental-manager-v85","rental-manager-v5","rental-manager-v8","rental-manager-v82"]; 
 const AHMAD_ROOMS=[
 "Ahmad 1st Floor Room#1","Ahmad 1st Floor Room#2","Ahmad 1st Floor Room#3","Ahmad 1st Floor Room#4",
 "Ahmad 2nd Floor Room#1","Ahmad 2nd Floor Room#2","Ahmad 2nd Floor Room#3",
@@ -303,7 +303,18 @@ function load(){
   return {...defaultState(),...JSON.parse(raw||"{}")};
  }catch{return defaultState()}
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(state));renderAll();scheduleCloudSave()}
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(state));
+  renderAll();
+  scheduleCloudSave();
+  return true;
+ }catch(err){
+  console.error("Save failed",err);
+  toast("تعذر حفظ البيانات على هذا الجهاز. جرّب حذف مرفق كبير أو تصدير نسخة احتياطية.");
+  return false;
+ }
+}
 const uid=()=>crypto.randomUUID?.()||Date.now()+"-"+Math.random();
 const money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(n||0));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
@@ -445,7 +456,7 @@ $("#financeMonth").onchange=renderFinance;$("#financeCurrentMonth").onclick=()=>
 $("#exportBtn").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="rental-backup-"+today()+".json";a.click()};
 $("#importInput").onchange=async e=>{try{state={...defaultState(),...JSON.parse(await e.target.files[0].text())};save();toast("تمت الاستعادة")}catch{toast("الملف غير صالح")}};
 
-const CLOUD_SETTINGS_KEY="rental-manager-cloud-v85";
+const CLOUD_SETTINGS_KEY="rental-manager-cloud-v86";
 let cloudTimer=null, cloudDb=null, cloudUnsubscribe=null, cloudApplying=false;
 function cloudSettings(){try{return JSON.parse(localStorage.getItem(CLOUD_SETTINGS_KEY)||"{}")||{}}catch{return {}}}
 function saveCloudSettings(value){localStorage.setItem(CLOUD_SETTINGS_KEY,JSON.stringify(value))}
@@ -456,24 +467,8 @@ function setCloudStatus(ok,text,stamp=""){
 }
 function cloudDocRef(){const id=($("#cloudDocumentId")?.value||"aladdin-rental-manager").trim();return cloudDb.collection("rentalManagers").doc(id)}
 function normalizeCloudState(data){const payload=data?.state||data;if(!payload||typeof payload!=="object")throw new Error("بيانات السحابة غير صالحة");return {...defaultState(),...payload}}
-async function pushCloud(silent=false){if(!cloudDb){if(!silent)toast("اتصل بـ Firebase أولًا");return}try{await cloudDocRef().set({state,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),version:"8.5"},{merge:false});const stamp="آخر رفع: "+new Date().toLocaleTimeString("ar");setCloudStatus(true,"متصل",stamp);if(!silent)toast("تم رفع البيانات للسحابة")}catch(err){setCloudStatus(false,"خطأ في الاتصال");if(!silent)toast("فشل الرفع: "+(err.message||err))}}
+async function pushCloud(silent=false){if(!cloudDb){if(!silent)toast("اتصل بـ Firebase أولًا");return}try{await cloudDocRef().set({state,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),version:"8.6"},{merge:false});const stamp="آخر رفع: "+new Date().toLocaleTimeString("ar");setCloudStatus(true,"متصل",stamp);if(!silent)toast("تم رفع البيانات للسحابة")}catch(err){setCloudStatus(false,"خطأ في الاتصال");if(!silent)toast("فشل الرفع: "+(err.message||err))}}
 async function pullCloud(silent=false){if(!cloudDb){if(!silent)toast("اتصل بـ Firebase أولًا");return}try{const snap=await cloudDocRef().get();if(!snap.exists){if(!silent)toast("لا توجد بيانات سحابية بعد");return}cloudApplying=true;state=normalizeCloudState(snap.data());localStorage.setItem(KEY,JSON.stringify(state));renderAll();cloudApplying=false;setCloudStatus(true,"متصل","آخر تنزيل: "+new Date().toLocaleTimeString("ar"));if(!silent)toast("تم تنزيل بيانات السحابة")}catch(err){cloudApplying=false;setCloudStatus(false,"خطأ في الاتصال");if(!silent)toast("فشل التنزيل: "+(err.message||err))}}
-function hasLocalData(){return [state.tenants,state.payments,state.expenses,state.ledgers,state.archive,state.archiveRooms,state.reminders].some(a=>Array.isArray(a)&&a.length>0)||state.rooms.some(r=>Number(r.rent||0)>0)}
-function startCloudListener(ref){
- if(cloudUnsubscribe)cloudUnsubscribe();
- let firstEvent=true;
- cloudUnsubscribe=ref.onSnapshot(snap=>{
-  if(firstEvent){firstEvent=false;return}
-  if(!snap.exists||cloudApplying)return;
-  try{
-   const incoming=normalizeCloudState(snap.data());
-   if(JSON.stringify(incoming)!==JSON.stringify(state)){
-    cloudApplying=true;state=incoming;localStorage.setItem(KEY,JSON.stringify(state));renderAll();cloudApplying=false;
-   }
-   setCloudStatus(true,"متصل","آخر مزامنة: "+new Date().toLocaleTimeString("ar"));
-  }catch(err){setCloudStatus(false,"خطأ في بيانات السحابة")}
- },()=>setCloudStatus(false,"انقطع الاتصال"));
-}
 function hasLocalData(){return [state.tenants,state.payments,state.expenses,state.ledgers,state.archive,state.archiveRooms,state.reminders].some(a=>Array.isArray(a)&&a.length>0)||state.rooms.some(r=>Number(r.rent||0)>0)}
 function startCloudListener(ref){
  if(cloudUnsubscribe)cloudUnsubscribe();
