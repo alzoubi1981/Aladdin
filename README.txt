@@ -1,12 +1,15 @@
-Rental Manager V8.4
+Rental Manager V8.4 — Firebase Settings Edition
 
-New in this version:
-- Real Firebase Firestore connection from Settings.
-- Automatic synchronization between phone and computer.
-- Manual cloud upload and download buttons.
-- Connection status and last synchronization time.
-- Local storage remains available when offline.
-- Financial dashboard and tenant details retained.
-- Backup export and restore retained.
+هذه النسخة تحتوي فعليًا على ربط Firebase من داخل صفحة الإعدادات:
+1) افتح الإعدادات.
+2) الصق Firebase Config بصيغة JSON فقط.
+3) اكتب معرّفًا مشتركًا بين أجهزتك.
+4) اضغط اتصال.
+5) على الجهاز الذي يحتوي بياناتك اضغط "رفع بيانات هذا الجهاز".
+6) على الجهاز الجديد اضغط "تنزيل بيانات السحابة".
 
-Upload every file in this folder to GitHub and replace the old files.
+مهم:
+- فعّل Firestore Database في مشروع Firebase.
+- لا ترفع بيانات جهاز فارغ فوق بياناتك السحابية.
+- التطبيق يحتفظ أيضًا بنسخة محلية ويعمل دون إنترنت.
+- بيانات الإعدادات محفوظة داخل المتصفح على الجهاز نفسه.
