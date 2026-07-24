@@ -1,12 +1,12 @@
-Rental Manager V8
+Rental Manager V8.1
 
-رفع الملفات التالية كلها إلى مستودع GitHub Pages:
-- index.html
-- manifest.json
-- sw.js
-- icon-192.png
-- icon-512.png
+New in this version:
+- Tenant details page/dialog.
+- Monthly rent, paid amount, and remaining balance.
+- Full payment history for each tenant.
+- Email and emergency contact fields.
+- ID and contract attachments (1.5 MB maximum each).
+- Room transfer history.
+- Details button for active and archived tenants.
 
-التطبيق يعمل مباشرة بالحفظ المحلي.
-للمزامنة: افتح الإعدادات، أدخل بيانات Firebase Web App ومعرّف مزامنة واحدًا على الهاتف والكمبيوتر، ثم اضغط اتصال ومزامنة.
-يجب تفعيل Cloud Firestore في مشروع Firebase والسماح بالقراءة والكتابة وفق قواعد الأمان المناسبة لك.
+Upload all files to GitHub and replace the old files.
