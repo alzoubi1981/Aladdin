@@ -1,0 +1,24 @@
+إعداد رسائل تيليغرام — V8.5
+
+1) أنشئ بوتًا من @BotFather في Telegram واحفظ Bot Token.
+2) أرسل أي رسالة إلى البوت.
+3) احصل على Chat ID من:
+   https://api.telegram.org/botYOUR_TOKEN/getUpdates
+   وابحث عن chat ثم id.
+4) في Firebase Console افتح:
+   Project settings > Service accounts > Generate new private key
+   واحفظ ملف JSON. لا ترفعه إلى GitHub.
+5) في مستودع GitHub افتح:
+   Settings > Secrets and variables > Actions > New repository secret
+6) أضف الأسرار التالية:
+   TELEGRAM_BOT_TOKEN = رمز البوت
+   TELEGRAM_CHAT_ID = رقم المحادثة
+   FIREBASE_SERVICE_ACCOUNT = محتوى ملف JSON كاملًا
+   FIREBASE_DOCUMENT_ID = aladdin-rental-manager
+7) ارفع جميع ملفات V8.5، بما فيها مجلد .github ومجلد scripts وpackage.json.
+8) افتح تبويب Actions، اختر Telegram rental reminders، ثم Run workflow للاختبار.
+
+ملاحظات:
+- الفحص يتم كل 5 دقائق، وقد تتأخر الرسالة عدة دقائق.
+- الجدولة تعمل من الفرع الافتراضي فقط.
+- لا تضع Bot Token أو مفتاح Firebase داخل index.html.
