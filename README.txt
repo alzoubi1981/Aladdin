@@ -1,12 +1,12 @@
-Rental Manager V8.1
+Rental Manager V8.2
 
-New in this version:
-- Tenant details page/dialog.
-- Monthly rent, paid amount, and remaining balance.
-- Full payment history for each tenant.
-- Email and emergency contact fields.
-- ID and contract attachments (1.5 MB maximum each).
-- Room transfer history.
-- Details button for active and archived tenants.
+التحديثات:
+- لوحة مالية شهرية كاملة.
+- عرض الغرف الفارغة والمؤجرة.
+- المحصل والمتبقي والمصاريف وصافي الدخل.
+- ملخص مالي منفصل لـ Aladdin و Ahmad.
+- تعديل وحذف الدفعات.
+- تعديل وحذف المصاريف والجداول.
+- تنبيهات أفضل للإيجار المتبقي والعقود.
 
-Upload all files to GitHub and replace the old files.
+ارفع جميع الملفات إلى GitHub Pages واستبدل الملفات القديمة.
