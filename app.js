@@ -1,180 +1,107 @@
-const DB_KEY = "rentalManagerPWA_v1";
-const defaultState = () => ({
-  lang: "ar",
-  activeHouse: "Aladdin",
-  rooms: [
-    ...Array.from({length:20},(_,i)=>({id:crypto.randomUUID(),house:"Aladdin",name:`Room #${i+1}`,rent:0})),
-    ...Array.from({length:20},(_,i)=>({id:crypto.randomUUID(),house:"Ahmad",name:`Room #${i+1}`,rent:0}))
-  ],
-  tenants: [],
-  archived: [],
-  payments: [],
-  ledgers: []
-});
-let state = load();
-state.ledgers = state.ledgers || [];
-let activeLedger = "Aladdin";
-function load(){ try{ return JSON.parse(localStorage.getItem(DB_KEY)) || defaultState(); }catch{return defaultState();}}
-function save(){ localStorage.setItem(DB_KEY,JSON.stringify(state)); renderAll(); }
+import "./cloud.js";
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const uid=()=>crypto.randomUUID();
+const KEY="rental-manager-v5";
+const AHMAD_ROOMS=[
+"Ahmad 1st Floor Room#1","Ahmad 1st Floor Room#2","Ahmad 1st Floor Room#3","Ahmad 1st Floor Room#4",
+"Ahmad 2nd Floor Room#1","Ahmad 2nd Floor Room#2","Ahmad 2nd Floor Room#3",
+"Ahmad 3rd Floor Room#1","Ahmad 3rd Floor Room#2","Ahmad 3rd Floor Room#3"
+];
+const defaultState=()=>({rooms:AHMAD_ROOMS.map((name,i)=>({id:"ahmad-"+(i+1),house:"Ahmad",name,rent:0})),tenants:[],payments:[],expenses:[],ledgers:[],archive:[]});
+let state=load(),roomHouse="Aladdin",tenantHouse="Aladdin",expenseOwner="Aladdin",ledgerOwner="Aladdin";
+function load(){try{return {...defaultState(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return defaultState()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));renderAll();scheduleCloudSave()}
+const uid=()=>crypto.randomUUID?.()||Date.now()+"-"+Math.random();
+const money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(n||0));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-const t={
- ar:{appTitle:"إدارة الإيجارات",subtitle:"Aladdin و Ahmad",rooms:"الغرف",occupied:"المشغولة",vacant:"الشاغرة",income:"إيجار شهري",alerts:"التنبيهات",tenants:"المستأجرون الحاليون",payments:"الدفعات",archive:"المستأجرون السابقون",backup:"النسخ الاحتياطي",backupText:"صدّر نسخة من جميع البيانات واحفظها في تطبيق الملفات أو iCloud Drive.",export:"تصدير نسخة احتياطية",import:"استعادة نسخة احتياطية",danger:"إعادة ضبط التطبيق",reset:"حذف جميع البيانات",nav:["الرئيسية","الغرف","المستأجرون","الدفعات","الأرشيف","الإعدادات"],addRoom:"+ غرفة",addTenant:"+ مستأجر",addPayment:"+ دفعة",searchRoom:"بحث بالغرفة أو المستأجر",searchTenant:"بحث بالاسم أو الهاتف",empty:"لا توجد بيانات",occupiedWord:"مشغولة",vacantWord:"شاغرة",rent:"الإيجار",tenant:"المستأجر",phone:"الهاتف",period:"الفترة",edit:"تعديل",archiveBtn:"أرشفة",delete:"حذف",paid:"دفع",confirmArchive:"هذه الغرفة مشغولة. سيتم أرشفة المستأجر الحالي واستبداله. هل تريد المتابعة؟",confirmDelete:"هل أنت متأكد؟",saved:"تم الحفظ",archivedMsg:"تمت الأرشفة",deleted:"تم الحذف",imported:"تمت استعادة البيانات",resetDone:"تم حذف جميع البيانات",expiry:"ينتهي عقده خلال",days:"يوم",overdue:"انتهى العقد",noAlerts:"لا توجد تنبيهات حالياً",rentTomorrow:"موعد دفع الإيجار غداً",lease30:"تبقى 30 يوماً على نهاية العقد"},
- en:{appTitle:"Rental Manager",subtitle:"Aladdin & Ahmad",rooms:"Rooms",occupied:"Occupied",vacant:"Vacant",income:"Monthly Rent",alerts:"Alerts",tenants:"Current Tenants",payments:"Payments",archive:"Past Tenants",backup:"Backup",backupText:"Export all data and save it to Files or iCloud Drive.",export:"Export Backup",import:"Restore Backup",danger:"Reset App",reset:"Delete All Data",nav:["Home","Rooms","Tenants","Payments","Archive","Settings"],addRoom:"+ Room",addTenant:"+ Tenant",addPayment:"+ Payment",searchRoom:"Search room or tenant",searchTenant:"Search name or phone",empty:"No data",occupiedWord:"Occupied",vacantWord:"Vacant",rent:"Rent",tenant:"Tenant",phone:"Phone",period:"Period",edit:"Edit",archiveBtn:"Archive",delete:"Delete",paid:"Payment",confirmArchive:"This room is occupied. The current tenant will be archived and replaced. Continue?",confirmDelete:"Are you sure?",saved:"Saved",archivedMsg:"Archived",deleted:"Deleted",imported:"Backup restored",resetDone:"All data deleted",expiry:"Lease ends in",days:"days",overdue:"Lease expired",noAlerts:"No alerts now",rentTomorrow:"Rent is due tomorrow",lease30:"30 days remain on the lease"}
-};
-function tr(k){return t[state.lang][k]}
-function money(v){return new Intl.NumberFormat(state.lang==="ar"?"ar-US":"en-US",{style:"currency",currency:"USD"}).format(Number(v||0))}
-function fmtDate(d){if(!d)return"-";return new Date(d+"T12:00:00").toLocaleDateString(state.lang==="ar"?"ar-US":"en-US")}
-function tenantForRoom(id){return state.tenants.find(x=>x.roomId===id)}
-function roomById(id){return state.rooms.find(x=>x.id===id)}
-function toast(m){const el=$("#toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1800)}
-function renderText(){
- document.documentElement.lang=state.lang;document.documentElement.dir=state.lang==="ar"?"rtl":"ltr";
- $("#appTitle").textContent=tr("appTitle");$("#subtitle").textContent=tr("subtitle");$("#langBtn").textContent=state.lang==="ar"?"English":"العربية";
- $("#statRoomsLabel").textContent=tr("rooms");$("#statOccupiedLabel").textContent=tr("occupied");$("#statVacantLabel").textContent=tr("vacant");$("#statIncomeLabel").textContent=tr("income");$("#alertsTitle").textContent=tr("alerts");
- $("#tenantsTitle").textContent=tr("tenants");$("#paymentsTitle").textContent=tr("payments");$("#archiveTitle").textContent=tr("archive");$("#backupTitle").textContent=tr("backup");$("#backupText").textContent=tr("backupText");
- $("#exportBtn").textContent=tr("export");$("#importLabel").textContent=tr("import");$("#dangerTitle").textContent=tr("danger");$("#resetBtn").textContent=tr("reset");
- [$("#navDashboard"),$("#navRooms"),$("#navTenants"),$("#navPayments"),$("#navArchive")].forEach((e,i)=>e.textContent=tr("nav")[i]);
- if($("#navLedgers")) $("#navLedgers").textContent=state.lang==="ar"?"الجداول":"Tables";
- $("#navSettings").textContent=tr("nav")[5];
- if($("#ledgersTitle")) $("#ledgersTitle").textContent=state.lang==="ar"?"الجداول":"Tables";
- if($("#addLedgerEntryBtn")) $("#addLedgerEntryBtn").textContent=state.lang==="ar"?"+ إضافة سجل":"+ Add Record";
- $("#addRoomBtn").textContent=tr("addRoom");$("#addTenantBtn").textContent=tr("addTenant");$("#addPaymentBtn").textContent=tr("addPayment");$("#roomSearch").placeholder=tr("searchRoom");$("#tenantSearch").placeholder=tr("searchTenant");
-}
+const roomById=id=>state.rooms.find(r=>r.id===id);
+const tenantByRoom=id=>state.tenants.find(t=>t.roomId===id);
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1800)}
+function today(){return new Date().toISOString().slice(0,10)}
+
+function renderAll(){renderDashboard();renderRooms();renderTenants();renderPayments();renderExpenses();renderLedgers();renderArchive();fillPaymentTenants()}
 function renderDashboard(){
- const occ=state.tenants.length;$("#statRooms").textContent=state.rooms.length;$("#statOccupied").textContent=occ;$("#statVacant").textContent=state.rooms.length-occ;
- $("#statIncome").textContent=money(state.tenants.reduce((s,x)=>s+(roomById(x.roomId)?.rent||0),0));
- const now=new Date(); now.setHours(0,0,0,0);
- const tomorrow=new Date(now); tomorrow.setDate(now.getDate()+1);
- const alerts=[];
- state.tenants.forEach(x=>{
-   const r=roomById(x.roomId);
-   if(x.end){
-     const end=new Date(x.end+"T12:00:00"); end.setHours(0,0,0,0);
-     const days=Math.round((end-now)/86400000);
-     if(days<0) alerts.push({x,r,text:tr("overdue")});
-     else if(days===30) alerts.push({x,r,text:tr("lease30")});
-   }
-   const dueDay=Number(x.dueDay||(x.start?x.start.slice(8,10):1));
-   const lastDay=new Date(tomorrow.getFullYear(),tomorrow.getMonth()+1,0).getDate();
-   if(Math.min(dueDay,lastDay)===tomorrow.getDate()){
-     alerts.push({x,r,text:tr("rentTomorrow")});
-   }
- });
- $("#alertsList").innerHTML=alerts.length?alerts.map(a=>`<div class="item"><h3>${a.x.name}</h3><div class="meta">${a.r?.name||""} • ${a.text}</div></div>`).join(""):`<div class="empty">${tr("noAlerts")}</div>`;
+ const monthly=state.tenants.reduce((s,t)=>s+Number(t.rent||roomById(t.roomId)?.rent||0),0);
+ const expenses=state.expenses.reduce((s,x)=>s+Number(x.amount||0),0);
+ $("#statOccupied").textContent=state.tenants.length;$("#statTenants").textContent=state.tenants.length;$("#statIncome").textContent=money(monthly);$("#statExpenses").textContent=money(expenses);
+ const now=new Date();now.setHours(0,0,0,0);const tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);const alerts=[];
+ state.tenants.forEach(t=>{const r=roomById(t.roomId);if(t.end){const end=new Date(t.end+"T12:00:00");end.setHours(0,0,0,0);const d=Math.round((end-now)/86400000);if(d===30)alerts.push(`${t.name} — ${r?.name||""}: تبقى 30 يومًا على نهاية العقد`)}
+ const due=Number(t.dueDay||1),last=new Date(tomorrow.getFullYear(),tomorrow.getMonth()+1,0).getDate();if(Math.min(due,last)===tomorrow.getDate())alerts.push(`${t.name} — ${r?.name||""}: الإيجار مستحق غدًا`)});
+ $("#alertsList").innerHTML=alerts.length?alerts.map(a=>`<div class="list-item"><div>${esc(a)}</div></div>`).join(""):`<div class="empty">لا توجد تنبيهات حاليًا</div>`;
 }
 function renderRooms(){
- $$("#houseTabs button").forEach(b=>b.classList.toggle("active",b.dataset.house===state.activeHouse));
- const q=$("#roomSearch").value.toLowerCase();const rooms=state.rooms.filter(r=>r.house===state.activeHouse).filter(r=>{const te=tenantForRoom(r.id);return r.name.toLowerCase().includes(q)||(te?.name||"").toLowerCase().includes(q)});
- $("#roomsGrid").innerHTML=rooms.map(r=>{const te=tenantForRoom(r.id);return `<div class="room-card ${te?"occupied":"vacant"}"><h3>${r.name}</h3><div class="muted">${tr("rent")}: ${money(r.rent)}</div>${te?`<div class="muted">${tr("tenant")}: ${te.name}</div><span class="badge ok">${tr("occupiedWord")}</span>`:`<span class="badge warn">${tr("vacantWord")}</span>`}<div class="item-actions"><button class="mini edit-room" data-id="${r.id}">${tr("edit")}</button>${te?`<button class="mini edit-tenant" data-id="${te.id}">${tr("edit")}</button>`:`<button class="mini add-to-room" data-id="${r.id}">${tr("addTenant")}</button>`}</div></div>`}).join("");
- bindDynamic();
+ const q=$("#roomSearch").value.toLowerCase();
+ const occupied=state.rooms.filter(r=>r.house===roomHouse).map(r=>({r,t:tenantByRoom(r.id)})).filter(x=>x.t).filter(x=>(x.r.name+" "+x.t.name).toLowerCase().includes(q));
+ $("#roomsGrid").innerHTML=occupied.length?occupied.map(({r,t})=>`<article class="room-card"><span class="badge">مؤجرة</span><h3>${esc(r.name)}</h3><div class="meta">المستأجر: ${esc(t.name)}<br>الإيجار: ${money(t.rent||r.rent)}<br>الهاتف: ${esc(t.phone||"-")}</div><div class="actions"><button class="secondary" onclick="editRoom('${r.id}')">تعديل</button></div></article>`).join(""):`<div class="empty">لا توجد غرف مؤجرة في هذه القائمة</div>`;
 }
 function renderTenants(){
- const q=$("#tenantSearch").value.toLowerCase();const arr=state.tenants.filter(x=>x.name.toLowerCase().includes(q)||(x.phone||"").toLowerCase().includes(q));
- $("#tenantList").innerHTML=arr.length?arr.map(x=>{const r=roomById(x.roomId);return `<div class="item"><h3>${x.name}</h3><div class="meta">${r?.house||""} • ${r?.name||""}<br>${tr("phone")}: ${x.phone||"-"}<br>${tr("period")}: ${fmtDate(x.start)} — ${fmtDate(x.end)}</div><div class="item-actions"><button class="mini edit-tenant" data-id="${x.id}">${tr("edit")}</button><button class="mini archive-tenant" data-id="${x.id}">${tr("archiveBtn")}</button></div></div>`}).join(""):`<div class="empty">${tr("empty")}</div>`;bindDynamic();
+ const q=$("#tenantSearch").value.toLowerCase(),rows=state.tenants.filter(t=>roomById(t.roomId)?.house===tenantHouse).filter(t=>(t.name+" "+(t.phone||"")).toLowerCase().includes(q));
+ $("#tenantList").innerHTML=rows.length?rows.map(t=>{const r=roomById(t.roomId);return `<div class="tenant-card"><h3>${esc(t.name)}</h3><div class="meta">${esc(r?.name||"")}<br>الإيجار: ${money(t.rent||r?.rent)} · الاستحقاق: يوم ${t.dueDay||1}<br>${esc(t.phone||"")}</div><div class="actions"><button class="secondary" onclick="editTenant('${t.id}')">تعديل</button><button class="danger" onclick="archiveTenant('${t.id}')">إنهاء</button></div></div>`}).join(""):`<div class="empty">لا يوجد مستأجرون</div>`;
 }
 function renderPayments(){
- const arr=[...state.payments].sort((a,b)=>b.date.localeCompare(a.date));
- $("#paymentsList").innerHTML=arr.length?arr.map(p=>{const te=state.tenants.find(x=>x.id===p.tenantId)||state.archived.find(x=>x.id===p.tenantId);return `<div class="item"><h3>${money(p.amount)} — ${te?.name||"-"}</h3><div class="meta">${fmtDate(p.date)} • ${p.method}${p.note?`<br>${p.note}`:""}</div><div class="item-actions"><button class="mini danger delete-payment" data-id="${p.id}">${tr("delete")}</button></div></div>`}).join(""):`<div class="empty">${tr("empty")}</div>`;bindDynamic();
+ const rows=[...state.payments].sort((a,b)=>b.date.localeCompare(a.date));
+ $("#paymentsList").innerHTML=rows.length?rows.map(p=>{const t=state.tenants.find(x=>x.id===p.tenantId)||state.archive.find(x=>x.id===p.tenantId);return `<div class="list-item"><div><strong>${esc(t?.name||"مستأجر")}</strong><div class="meta">${p.date} · ${esc(p.method)} · ${esc(p.note||"")}</div></div><strong>${money(p.amount)}</strong></div>`}).join(""):`<div class="empty">لا توجد دفعات</div>`;
 }
-function renderArchive(){
- $("#archiveList").innerHTML=state.archived.length?[...state.archived].reverse().map(x=>`<div class="item"><h3>${x.name}</h3><div class="meta">${x.house||""} • ${x.roomName||""}<br>${tr("period")}: ${fmtDate(x.start)} — ${fmtDate(x.end)}</div></div>`).join(""):`<div class="empty">${tr("empty")}</div>`;
+function renderTable(kind,owner,bodyId){
+ const rows=state[kind].filter(x=>x.owner===owner).sort((a,b)=>b.date.localeCompare(a.date));
+ $(bodyId).innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.name)}</td><td>${money(x.amount)}</td><td>${x.date}</td><td>${esc(x.note||"")}</td><td><button class="danger" onclick="deleteRow('${kind}','${x.id}')">حذف</button></td></tr>`).join(""):`<tr><td colspan="5" class="empty">لا توجد سجلات</td></tr>`;
+}
+function renderExpenses(){renderTable("expenses",expenseOwner,"#expenseBody")}
+function renderLedgers(){renderTable("ledgers",ledgerOwner,"#ledgerBody")}
+function renderArchive(){$("#archiveList").innerHTML=state.archive.length?state.archive.map(t=>`<div class="list-item"><div><strong>${esc(t.name)}</strong><div class="meta">${esc(t.roomName||"")} · ${t.end||""}</div></div></div>`).join(""):`<div class="empty">الأرشيف فارغ</div>`}
+function fillPaymentTenants(){$("#paymentTenant").innerHTML=state.tenants.map(t=>`<option value="${t.id}">${esc(t.name)} — ${esc(roomById(t.roomId)?.name||"")}</option>`).join("")}
+
+function updateRoomNameControl(){
+ const ahmad=$("#roomHouse").value==="Ahmad";$("#roomNameSelect").style.display=ahmad?"block":"none";$("#roomNameCustom").style.display=ahmad?"none":"block";
+ $("#roomNameSelect").innerHTML=AHMAD_ROOMS.map(n=>`<option>${n}</option>`).join("");
+}
+function fillTenantRooms(selected=""){
+ const house=$("#tenantHouse").value;const current=$("#tenantId").value;const currentTenant=state.tenants.find(t=>t.id===current);
+ const rooms=state.rooms.filter(r=>r.house===house).filter(r=>!tenantByRoom(r.id)||currentTenant?.roomId===r.id);
+ $("#tenantRoom").innerHTML=rooms.map(r=>`<option value="${r.id}" ${r.id===selected?"selected":""}>${esc(r.name)}</option>`).join("");
 }
 
-function renderLedgers(){
-  const rows=(state.ledgers||[]).filter(x=>x.owner===activeLedger).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
-  $("#ledgerTableBody").innerHTML=rows.length?rows.map(x=>`<tr>
-    <td>${esc(x.name||"")}</td>
-    <td>${money(Number(x.amount||0))}</td>
-    <td>${x.date||""}</td>
-    <td>${esc(x.note||"")}</td>
-    <td class="actions">
-      <button class="secondary small" onclick="editLedger('${x.id}')">✎</button>
-      <button class="danger small" onclick="deleteLedger('${x.id}')">×</button>
-    </td>
-  </tr>`).join(""):`<tr><td colspan="5" class="empty">${state.lang==="ar"?"لا توجد سجلات":"No records"}</td></tr>`;
-}
-function openLedgerDialog(id=""){
-  const x=(state.ledgers||[]).find(v=>v.id===id);
-  $("#ledgerEntryId").value=x?.id||"";
-  $("#ledgerOwner").value=x?.owner||activeLedger;
-  $("#ledgerName").value=x?.name||"";
-  $("#ledgerAmount").value=x?.amount||"";
-  $("#ledgerDate").value=x?.date||new Date().toISOString().slice(0,10);
-  $("#ledgerNote").value=x?.note||"";
-  $("#ledgerDialog").showModal();
-}
-window.editLedger=id=>openLedgerDialog(id);
-window.deleteLedger=id=>{
-  if(!confirm(state.lang==="ar"?"هل تريد حذف هذا السجل؟":"Delete this record?"))return;
-  state.ledgers=state.ledgers.filter(x=>x.id!==id);save();renderLedgers();
-};
+$("#addRoomBtn").onclick=()=>{ $("#roomForm").reset();$("#roomId").value="";$("#roomHouse").value=roomHouse;updateRoomNameControl();$("#roomDialog").showModal() };
+$("#roomHouse").onchange=updateRoomNameControl;
+$("#roomForm").onsubmit=e=>{e.preventDefault();const id=$("#roomId").value||uid(),house=$("#roomHouse").value,name=house==="Ahmad"?$("#roomNameSelect").value:$("#roomNameCustom").value.trim();if(!name)return;
+ const duplicate=state.rooms.find(r=>r.house===house&&r.name===name&&r.id!==id);if(duplicate){toast("هذه الغرفة موجودة مسبقًا");return}
+ const room={id,house,name,rent:Number($("#roomRent").value||0)};const i=state.rooms.findIndex(r=>r.id===id);i>=0?state.rooms[i]=room:state.rooms.push(room);$("#roomDialog").close();save();toast("تم حفظ الغرفة")};
+window.editRoom=id=>{const r=roomById(id);$("#roomId").value=r.id;$("#roomHouse").value=r.house;updateRoomNameControl();if(r.house==="Ahmad")$("#roomNameSelect").value=r.name;else $("#roomNameCustom").value=r.name;$("#roomRent").value=r.rent;$("#roomDialog").showModal()};
 
-function renderAll(){renderText();renderDashboard();renderRooms();renderTenants();renderPayments();renderArchive();renderLedgers()}
-function bindDynamic(){
- $$(".edit-room").forEach(b=>b.onclick=()=>openRoom(b.dataset.id));
- $$(".add-to-room").forEach(b=>b.onclick=()=>openTenant(null,b.dataset.id));
- $$(".edit-tenant").forEach(b=>b.onclick=()=>openTenant(b.dataset.id));
- $$(".archive-tenant").forEach(b=>b.onclick=()=>archiveTenant(b.dataset.id));
- $$(".delete-payment").forEach(b=>b.onclick=()=>{if(confirm(tr("confirmDelete"))){state.payments=state.payments.filter(x=>x.id!==b.dataset.id);save();toast(tr("deleted"))}});
-}
-function openRoom(id){
- const r=id?roomById(id):null;$("#roomId").value=r?.id||"";$("#roomHouse").value=r?.house||state.activeHouse;$("#roomName").value=r?.name||`Room #${state.rooms.filter(x=>x.house===state.activeHouse).length+1}`;$("#roomRent").value=r?.rent||0;$("#roomDialog").showModal();
-}
-function openTenant(id,forcedRoom){
- const x=id?state.tenants.find(v=>v.id===id):null;$("#tenantId").value=x?.id||"";$("#tenantName").value=x?.name||"";$("#tenantPhone").value=x?.phone||"";$("#tenantEmail").value=x?.email||"";$("#tenantStart").value=x?.start||new Date().toISOString().slice(0,10);$("#tenantEnd").value=x?.end||"";$("#tenantDeposit").value=x?.deposit||0;$("#tenantDueDay").value=x?.dueDay||(x?.start?Number(x.start.slice(8,10)):1);$("#tenantNotes").value=x?.notes||"";
- $("#tenantRoom").innerHTML=state.rooms.map(r=>{const te=tenantForRoom(r.id);return `<option value="${r.id}">${r.house} — ${r.name}${te&&te.id!==x?.id?` (${tr("occupiedWord")}: ${te.name})`:""}</option>`}).join("");$("#tenantRoom").value=forcedRoom||x?.roomId||state.rooms[0]?.id;$("#tenantDialog").showModal();
-}
-function archiveTenant(id){
- const x=state.tenants.find(v=>v.id===id);if(!x)return;const r=roomById(x.roomId);state.archived.push({...x,archivedAt:new Date().toISOString(),house:r?.house,roomName:r?.name});state.tenants=state.tenants.filter(v=>v.id!==id);save();toast(tr("archivedMsg"));
-}
-$("#langBtn").onclick=()=>{state.lang=state.lang==="ar"?"en":"ar";save()};
-$$(".bottom-nav button").forEach(b=>b.onclick=()=>{$$(".bottom-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".page").forEach(p=>p.classList.remove("active"));$("#"+b.dataset.page).classList.add("active")});
-$$("#houseTabs button").forEach(b=>b.onclick=()=>{state.activeHouse=b.dataset.house;save()});
+$("#addTenantBtn").onclick=()=>{$("#tenantForm").reset();$("#tenantId").value="";$("#tenantHouse").value=tenantHouse;fillTenantRooms();$("#tenantStart").value=today();$("#tenantDueDay").value=1;$("#tenantDialog").showModal()};
+$("#tenantHouse").onchange=()=>fillTenantRooms();
+$("#tenantRoom").onchange=()=>{const r=roomById($("#tenantRoom").value);if(r)$("#tenantRent").value=r.rent||""};
+$("#tenantForm").onsubmit=e=>{e.preventDefault();const id=$("#tenantId").value||uid(),roomId=$("#tenantRoom").value;if(!roomId){toast("أضف غرفة متاحة أولًا");return}const old=state.tenants.find(t=>t.id===id);
+ const t={id,name:$("#tenantName").value.trim(),phone:$("#tenantPhone").value.trim(),roomId,rent:Number($("#tenantRent").value||0),start:$("#tenantStart").value,end:$("#tenantEnd").value,deposit:Number($("#tenantDeposit").value||0),dueDay:Number($("#tenantDueDay").value||1),notes:$("#tenantNotes").value.trim()};
+ const i=state.tenants.findIndex(x=>x.id===id);i>=0?state.tenants[i]=t:state.tenants.push(t);const r=roomById(roomId);if(r)r.rent=t.rent;$("#tenantDialog").close();save();toast("تم حفظ المستأجر")};
+window.editTenant=id=>{const t=state.tenants.find(x=>x.id===id),r=roomById(t.roomId);$("#tenantId").value=t.id;$("#tenantName").value=t.name;$("#tenantPhone").value=t.phone||"";$("#tenantHouse").value=r?.house||"Aladdin";fillTenantRooms(t.roomId);$("#tenantRent").value=t.rent||r?.rent||0;$("#tenantStart").value=t.start;$("#tenantEnd").value=t.end||"";$("#tenantDeposit").value=t.deposit||0;$("#tenantDueDay").value=t.dueDay||1;$("#tenantNotes").value=t.notes||"";$("#tenantDialog").showModal()};
+window.archiveTenant=id=>{if(!confirm("إنهاء هذا المستأجر ونقله إلى الأرشيف؟"))return;const t=state.tenants.find(x=>x.id===id),r=roomById(t.roomId);state.archive.push({...t,roomName:r?.name,end:t.end||today()});state.tenants=state.tenants.filter(x=>x.id!==id);save()};
+
+$("#addPaymentBtn").onclick=()=>{$("#paymentForm").reset();fillPaymentTenants();$("#paymentDate").value=today();$("#paymentDialog").showModal()};
+$("#paymentForm").onsubmit=e=>{e.preventDefault();state.payments.push({id:uid(),tenantId:$("#paymentTenant").value,amount:Number($("#paymentAmount").value),date:$("#paymentDate").value,method:$("#paymentMethod").value,note:$("#paymentNote").value.trim()});$("#paymentDialog").close();save();toast("تم حفظ الدفعة")};
+
+function openExpense(id=""){const x=state.expenses.find(v=>v.id===id);$("#expenseId").value=x?.id||"";$("#expenseOwner").value=x?.owner||expenseOwner;$("#expenseName").value=x?.name||"";$("#expenseAmount").value=x?.amount||"";$("#expenseDate").value=x?.date||today();$("#expenseNote").value=x?.note||"";$("#expenseDialog").showModal()}
+$("#addExpenseBtn").onclick=()=>openExpense();
+$("#expenseForm").onsubmit=e=>{e.preventDefault();upsert("expenses",{id:$("#expenseId").value||uid(),owner:$("#expenseOwner").value,name:$("#expenseName").value.trim(),amount:Number($("#expenseAmount").value),date:$("#expenseDate").value,note:$("#expenseNote").value.trim()});expenseOwner=$("#expenseOwner").value;$("#expenseDialog").close();save();toast("تم حفظ المصروف")};
+
+function openLedger(id=""){const x=state.ledgers.find(v=>v.id===id);$("#ledgerId").value=x?.id||"";$("#ledgerOwner").value=x?.owner||ledgerOwner;$("#ledgerName").value=x?.name||"";$("#ledgerAmount").value=x?.amount||"";$("#ledgerDate").value=x?.date||today();$("#ledgerNote").value=x?.note||"";$("#ledgerDialog").showModal()}
+$("#addLedgerBtn").onclick=()=>openLedger();
+$("#ledgerForm").onsubmit=e=>{e.preventDefault();upsert("ledgers",{id:$("#ledgerId").value||uid(),owner:$("#ledgerOwner").value,name:$("#ledgerName").value.trim(),amount:Number($("#ledgerAmount").value),date:$("#ledgerDate").value,note:$("#ledgerNote").value.trim()});ledgerOwner=$("#ledgerOwner").value;$("#ledgerDialog").close();save();toast("تم حفظ السجل")};
+function upsert(kind,row){const i=state[kind].findIndex(x=>x.id===row.id);i>=0?state[kind][i]=row:state[kind].push(row)}
+window.deleteRow=(kind,id)=>{if(confirm("حذف السجل؟")){state[kind]=state[kind].filter(x=>x.id!==id);save()}};
+
+$$("dialog .cancel").forEach(b=>b.onclick=()=>b.closest("dialog").close());
+$$(".bottom-nav button").forEach(b=>b.onclick=()=>{$$(".bottom-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".page").forEach(p=>p.classList.remove("active"));$("#"+b.dataset.page).classList.add("active");window.scrollTo({top:0,behavior:"smooth"})});
+function tabHandler(container,key,cb){$(container).onclick=e=>{const b=e.target.closest("button");if(!b)return;$$(container+" button").forEach(x=>x.classList.toggle("active",x===b));cb(b.dataset[key])}}
+tabHandler("#roomHouseTabs","house",v=>{roomHouse=v;renderRooms()});tabHandler("#tenantHouseTabs","house",v=>{tenantHouse=v;renderTenants()});tabHandler("#expenseTabs","owner",v=>{expenseOwner=v;renderExpenses()});tabHandler("#ledgerTabs","owner",v=>{ledgerOwner=v;renderLedgers()});
 $("#roomSearch").oninput=renderRooms;$("#tenantSearch").oninput=renderTenants;
-$("#addRoomBtn").onclick=()=>openRoom();$("#addTenantBtn").onclick=()=>openTenant();$("#addPaymentBtn").onclick=()=>{if(!state.tenants.length){toast(tr("empty"));return}$("#paymentTenant").innerHTML=state.tenants.map(x=>`<option value="${x.id}">${x.name}</option>`).join("");$("#paymentDate").value=new Date().toISOString().slice(0,10);$("#paymentAmount").value=roomById(state.tenants[0].roomId)?.rent||0;$("#paymentDialog").showModal()};
-$("#paymentTenant").onchange=e=>{$("#paymentAmount").value=roomById(state.tenants.find(x=>x.id===e.target.value)?.roomId)?.rent||0};
-$("#roomForm").onsubmit=e=>{e.preventDefault();const id=$("#roomId").value;const obj={id:id||crypto.randomUUID(),house:$("#roomHouse").value,name:$("#roomName").value.trim(),rent:Number($("#roomRent").value||0)};if(id)state.rooms=state.rooms.map(x=>x.id===id?obj:x);else state.rooms.push(obj);$("#roomDialog").close();save();toast(tr("saved"))};
-$("#tenantForm").onsubmit=e=>{e.preventDefault();const id=$("#tenantId").value;const roomId=$("#tenantRoom").value;const existing=tenantForRoom(roomId);if(existing&&existing.id!==id){if(!confirm(tr("confirmArchive")))return;archiveTenant(existing.id)}const obj={id:id||crypto.randomUUID(),name:$("#tenantName").value.trim(),phone:$("#tenantPhone").value.trim(),email:$("#tenantEmail").value.trim(),roomId,start:$("#tenantStart").value,end:$("#tenantEnd").value,deposit:Number($("#tenantDeposit").value||0),dueDay:Number($("#tenantDueDay").value||1),notes:$("#tenantNotes").value.trim()};if(id)state.tenants=state.tenants.map(x=>x.id===id?obj:x);else state.tenants.push(obj);$("#tenantDialog").close();save();toast(tr("saved"))};
-$("#paymentForm").onsubmit=e=>{e.preventDefault();state.payments.push({id:crypto.randomUUID(),tenantId:$("#paymentTenant").value,amount:Number($("#paymentAmount").value),date:$("#paymentDate").value,method:$("#paymentMethod").value,note:$("#paymentNote").value.trim()});$("#paymentDialog").close();save();toast(tr("saved"))};
-$("#exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`rental-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href)};
-$("#importInput").onchange=async e=>{try{const f=e.target.files[0];if(!f)return;const data=JSON.parse(await f.text());if(!data.rooms||!data.tenants)throw Error();state=data;save();toast(tr("imported"))}catch{alert("Invalid backup file")}};
-$("#resetBtn").onclick=()=>{if(confirm(tr("confirmDelete"))){state=defaultState();save();toast(tr("resetDone"))}};
 
-$("#cancelRoom").onclick=()=>$("#roomDialog").close();
-$("#cancelTenant").onclick=()=>$("#tenantDialog").close();
-$("#cancelPayment").onclick=()=>$("#paymentDialog").close();
+$("#exportBtn").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="rental-backup-"+today()+".json";a.click()};
+$("#importInput").onchange=async e=>{try{state={...defaultState(),...JSON.parse(await e.target.files[0].text())};save();toast("تمت الاستعادة")}catch{toast("الملف غير صالح")}};
 
+let cloudTimer;
+function scheduleCloudSave(){clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>window.cloudSync?.save?.(state),500)}
+window.onCloudState=s=>{state={...defaultState(),...s};localStorage.setItem(KEY,JSON.stringify(state));renderAll()};
+window.setCloudStatus=ok=>{const b=$("#syncBadge");b.textContent=ok?"متصل بالسحابة":"حفظ محلي";b.classList.toggle("cloud",ok);b.classList.toggle("local",!ok)};
 
-$("#addLedgerEntryBtn").onclick=()=>openLedgerDialog();
-$("#cancelLedger").onclick=()=>$("#ledgerDialog").close();
-$("#ledgerTabs").onclick=e=>{
-  const b=e.target.closest("button[data-ledger]");if(!b)return;
-  activeLedger=b.dataset.ledger;
-  $$("#ledgerTabs button").forEach(x=>x.classList.toggle("active",x===b));
-  renderLedgers();
-};
-$("#ledgerForm").onsubmit=e=>{
-  e.preventDefault();
-  state.ledgers = state.ledgers || [];
-  const id=$("#ledgerEntryId").value || uid();
-  const entry={
-    id,
-    owner:$("#ledgerOwner").value || activeLedger,
-    name:$("#ledgerName").value.trim(),
-    amount:Number($("#ledgerAmount").value || 0),
-    date:$("#ledgerDate").value,
-    note:$("#ledgerNote").value.trim()
-  };
-  const i=state.ledgers.findIndex(x=>x.id===id);
-  if(i>=0) state.ledgers[i]=entry;
-  else state.ledgers.push(entry);
-  activeLedger=entry.owner;
-  $("#ledgerDialog").close();
-  save();
-  toast(tr("saved"));
-};
-
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 renderAll();
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");

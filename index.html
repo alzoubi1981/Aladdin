@@ -1,214 +1,186 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f766e" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="إدارة الإيجارات" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="إدارة الإيجارات">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
   <title>إدارة الإيجارات</title>
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <h1 id="appTitle">إدارة الإيجارات</h1>
-      <p id="subtitle">Aladdin و Ahmad</p>
+<header class="topbar">
+  <div>
+    <div class="eyebrow">Rental Manager</div>
+    <h1>إدارة الإيجارات</h1>
+    <p>Aladdin & Ahmad</p>
+  </div>
+  <div class="header-actions">
+    <span id="syncBadge" class="sync-badge local">حفظ محلي</span>
+    <button id="langBtn" class="icon-btn">EN</button>
+  </div>
+</header>
+
+<main>
+  <section id="dashboard" class="page active">
+    <div class="hero">
+      <div><small>نظرة عامة</small><h2>كل بيانات الإيجارات في مكان واحد</h2></div>
+      <div class="hero-mark">⌂</div>
     </div>
-    <button id="langBtn" class="secondary">English</button>
-  </header>
+    <div class="stats">
+      <article><span>الغرف المؤجرة</span><strong id="statOccupied">0</strong></article>
+      <article><span>المستأجرون</span><strong id="statTenants">0</strong></article>
+      <article><span>الإيجار الشهري</span><strong id="statIncome">$0</strong></article>
+      <article><span>المصاريف</span><strong id="statExpenses">$0</strong></article>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>التنبيهات</h2></div>
+      <div id="alertsList" class="list"></div>
+    </div>
+  </section>
 
-  <main>
-    <section id="dashboard" class="page active">
-      <div class="stats">
-        <div class="card stat"><span id="statRoomsLabel">الغرف</span><strong id="statRooms">0</strong></div>
-        <div class="card stat"><span id="statOccupiedLabel">المشغولة</span><strong id="statOccupied">0</strong></div>
-        <div class="card stat"><span id="statVacantLabel">الشاغرة</span><strong id="statVacant">0</strong></div>
-        <div class="card stat"><span id="statIncomeLabel">إيجار شهري</span><strong id="statIncome">$0</strong></div>
-      </div>
-      <div class="card">
-        <div class="section-head">
-          <h2 id="alertsTitle">التنبيهات</h2>
-        </div>
-        <div id="alertsList" class="list"></div>
-      </div>
-    </section>
+  <section id="rooms" class="page">
+    <div class="page-head">
+      <div><small>الغرف المؤجرة فقط</small><h2>الغرف</h2></div>
+      <button id="addRoomBtn" class="primary">+ إضافة غرفة</button>
+    </div>
+    <div class="segmented" id="roomHouseTabs">
+      <button data-house="Aladdin" class="active">Aladdin</button>
+      <button data-house="Ahmad">Ahmad</button>
+    </div>
+    <input id="roomSearch" class="search" placeholder="بحث بالغرفة أو المستأجر">
+    <div id="roomsGrid" class="card-grid"></div>
+  </section>
 
-    <section id="rooms" class="page">
-      <div class="toolbar">
-        <div class="segmented" id="houseTabs">
-          <button data-house="Aladdin" class="active">Aladdin</button>
-          <button data-house="Ahmad">Ahmad</button>
-        </div>
-        <button id="addRoomBtn" class="primary">+ غرفة</button>
-      </div>
-      <input id="roomSearch" class="search" placeholder="بحث بالغرفة أو المستأجر" />
-      <div id="roomsGrid" class="rooms-grid"></div>
-    </section>
+  <section id="tenants" class="page">
+    <div class="page-head">
+      <div><small>عرض منفصل لكل بيت</small><h2>المستأجرون</h2></div>
+      <button id="addTenantBtn" class="primary">+ إضافة مستأجر</button>
+    </div>
+    <div class="segmented" id="tenantHouseTabs">
+      <button data-house="Aladdin" class="active">مستأجرو Aladdin</button>
+      <button data-house="Ahmad">مستأجرو Ahmad</button>
+    </div>
+    <input id="tenantSearch" class="search" placeholder="بحث بالاسم أو الهاتف">
+    <div id="tenantList" class="list"></div>
+  </section>
 
-    <section id="tenants" class="page">
-      <div class="section-head">
-        <h2 id="tenantsTitle">المستأجرون الحاليون</h2>
-        <button id="addTenantBtn" class="primary">+ مستأجر</button>
-      </div>
-      <input id="tenantSearch" class="search" placeholder="بحث بالاسم أو الهاتف" />
-      <div id="tenantList" class="list"></div>
-    </section>
+  <section id="payments" class="page">
+    <div class="page-head"><div><small>سجل التحصيل</small><h2>الدفعات</h2></div><button id="addPaymentBtn" class="primary">+ دفعة</button></div>
+    <div id="paymentsList" class="list"></div>
+  </section>
 
-    <section id="payments" class="page">
-      <div class="section-head">
-        <h2 id="paymentsTitle">الدفعات</h2>
-        <button id="addPaymentBtn" class="primary">+ دفعة</button>
-      </div>
-      <div id="paymentsList" class="list"></div>
-    </section>
+  <section id="expenses" class="page">
+    <div class="page-head"><div><small>جدولان منفصلان</small><h2>المصاريف</h2></div><button id="addExpenseBtn" class="primary">+ مصروف</button></div>
+    <div class="segmented" id="expenseTabs">
+      <button data-owner="Aladdin" class="active">مصاريف Aladdin</button>
+      <button data-owner="Ahmad">مصاريف Ahmad</button>
+    </div>
+    <div class="table-wrap panel">
+      <table>
+        <thead><tr><th>Name</th><th>Amount</th><th>Date</th><th>Note</th><th></th></tr></thead>
+        <tbody id="expenseBody"></tbody>
+      </table>
+    </div>
+  </section>
 
-    <section id="archive" class="page">
-      <div class="section-head">
-        <h2 id="archiveTitle">المستأجرون السابقون</h2>
-      </div>
-      <div id="archiveList" class="list"></div>
-    </section>
+  <section id="ledgers" class="page">
+    <div class="page-head"><div><small>Name, Amount, Date, Note</small><h2>الجداول</h2></div><button id="addLedgerBtn" class="primary">+ سجل</button></div>
+    <div class="segmented" id="ledgerTabs">
+      <button data-owner="Aladdin" class="active">Aladdin</button>
+      <button data-owner="Ahmad">Ahmad</button>
+    </div>
+    <div class="table-wrap panel">
+      <table>
+        <thead><tr><th>Name</th><th>Amount</th><th>Date</th><th>Note</th><th></th></tr></thead>
+        <tbody id="ledgerBody"></tbody>
+      </table>
+    </div>
+  </section>
 
+  <section id="archive" class="page">
+    <div class="page-head"><div><small>السجلات السابقة</small><h2>الأرشيف</h2></div></div>
+    <div id="archiveList" class="list"></div>
+  </section>
 
-    <section id="ledgers" class="page">
-      <div class="section-head">
-        <h2 id="ledgersTitle">الجداول</h2>
-        <button id="addLedgerEntryBtn" class="primary">+ إضافة سجل</button>
+  <section id="settings" class="page">
+    <div class="panel">
+      <h2>المزامنة السحابية المجانية</h2>
+      <p class="muted">عند إضافة بيانات Firebase في ملف firebase-config.js ستتزامن البيانات بين الكمبيوتر والهاتف تلقائيًا.</p>
+      <div class="stack">
+        <button id="exportBtn" class="primary full">تصدير نسخة احتياطية</button>
+        <label class="secondary full file-label">استعادة نسخة احتياطية<input id="importInput" type="file" accept=".json" hidden></label>
       </div>
-      <div class="segmented ledger-tabs" id="ledgerTabs">
-        <button data-ledger="Aladdin" class="active">Aladdin</button>
-        <button data-ledger="Ahmad">Ahmad</button>
-      </div>
-      <div class="table-wrap card">
-        <table class="ledger-table">
-          <thead>
-            <tr>
-              <th id="ledgerNameHead">Name</th>
-              <th id="ledgerAmountHead">Amount</th>
-              <th id="ledgerDateHead">Date</th>
-              <th id="ledgerNoteHead">Note</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="ledgerTableBody"></tbody>
-        </table>
-      </div>
-    </section>
+    </div>
+  </section>
+</main>
 
-    <section id="settings" class="page">
-      <div class="card">
-        <h2 id="backupTitle">النسخ الاحتياطي</h2>
-        <p id="backupText">صدّر نسخة من جميع البيانات واحفظها في تطبيق الملفات أو iCloud Drive.</p>
-        <div class="stack">
-          <button id="exportBtn" class="primary full">تصدير نسخة احتياطية</button>
-          <label class="secondary full file-label">
-            <span id="importLabel">استعادة نسخة احتياطية</span>
-            <input id="importInput" type="file" accept=".json,application/json" hidden />
-          </label>
-        </div>
-      </div>
-      <div class="card danger-card">
-        <h2 id="dangerTitle">إعادة ضبط التطبيق</h2>
-        <button id="resetBtn" class="danger full">حذف جميع البيانات</button>
-      </div>
-    </section>
-  </main>
+<nav class="bottom-nav">
+  <button data-page="dashboard" class="active"><span>⌂</span><small>الرئيسية</small></button>
+  <button data-page="rooms"><span>▦</span><small>الغرف</small></button>
+  <button data-page="tenants"><span>♙</span><small>المستأجرون</small></button>
+  <button data-page="payments"><span>$</span><small>الدفعات</small></button>
+  <button data-page="expenses"><span>−</span><small>المصاريف</small></button>
+  <button data-page="ledgers"><span>▤</span><small>الجداول</small></button>
+  <button data-page="archive"><span>◷</span><small>الأرشيف</small></button>
+  <button data-page="settings"><span>⚙</span><small>الإعدادات</small></button>
+</nav>
 
-  <nav class="bottom-nav">
-    <button data-page="dashboard" class="active"><span>⌂</span><small id="navDashboard">الرئيسية</small></button>
-    <button data-page="rooms"><span>▦</span><small id="navRooms">الغرف</small></button>
-    <button data-page="tenants"><span>♙</span><small id="navTenants">المستأجرون</small></button>
-    <button data-page="payments"><span>$</span><small id="navPayments">الدفعات</small></button>
-    <button data-page="archive"><span>◷</span><small id="navArchive">الأرشيف</small></button>
-    <button data-page="ledgers"><span>▤</span><small id="navLedgers">الجداول</small></button>
-    <button data-page="settings"><span>⚙</span><small id="navSettings">الإعدادات</small></button>
-  </nav>
+<dialog id="roomDialog"><form id="roomForm">
+  <h3>إضافة/تعديل غرفة</h3><input id="roomId" type="hidden">
+  <label>البيت<select id="roomHouse"><option>Aladdin</option><option>Ahmad</option></select></label>
+  <label>الغرفة<select id="roomNameSelect"></select><input id="roomNameCustom" placeholder="اسم الغرفة"></label>
+  <label>قيمة الإيجار<input id="roomRent" type="number" min="0" step=".01" required></label>
+  <div class="dialog-actions"><button type="button" class="secondary cancel">إلغاء</button><button class="primary">حفظ</button></div>
+</form></dialog>
 
-  <dialog id="roomDialog">
-    <form method="dialog" id="roomForm">
-      <h3 id="roomDialogTitle">إضافة غرفة</h3>
-      <input type="hidden" id="roomId" />
-      <label><span id="roomHouseLabel">البيت</span>
-        <select id="roomHouse"><option>Aladdin</option><option>Ahmad</option></select>
-      </label>
-      <label><span id="roomNameLabel">اسم الغرفة</span>
-        <input id="roomName" required />
-      </label>
-      <label><span id="roomRentLabel">الإيجار الشهري</span>
-        <input id="roomRent" type="number" min="0" step="0.01" required />
-      </label>
-      <div class="dialog-actions">
-        <button type="button" class="secondary" id="cancelRoom">إلغاء</button>
-        <button value="default" class="primary" id="saveRoom">حفظ</button>
-      </div>
-    </form>
-  </dialog>
+<dialog id="tenantDialog"><form id="tenantForm">
+  <h3>إضافة/تعديل مستأجر</h3><input id="tenantId" type="hidden">
+  <label>الاسم<input id="tenantName" required></label>
+  <label>الهاتف<input id="tenantPhone" type="tel"></label>
+  <label>البيت<select id="tenantHouse"><option>Aladdin</option><option>Ahmad</option></select></label>
+  <label>الغرفة<select id="tenantRoom" required></select></label>
+  <label>قيمة الإيجار<input id="tenantRent" type="number" min="0" step=".01" required></label>
+  <label>بداية الإيجار<input id="tenantStart" type="date" required></label>
+  <label>نهاية الإيجار<input id="tenantEnd" type="date"></label>
+  <label>التأمين<input id="tenantDeposit" type="number" min="0" step=".01"></label>
+  <label>يوم استحقاق الإيجار<input id="tenantDueDay" type="number" min="1" max="31"></label>
+  <label>ملاحظات<textarea id="tenantNotes"></textarea></label>
+  <div class="dialog-actions"><button type="button" class="secondary cancel">إلغاء</button><button class="primary">حفظ</button></div>
+</form></dialog>
 
-  <dialog id="tenantDialog">
-    <form method="dialog" id="tenantForm">
-      <h3 id="tenantDialogTitle">إضافة مستأجر</h3>
-      <input type="hidden" id="tenantId" />
-      <label><span id="tenantNameLabel">الاسم</span><input id="tenantName" required /></label>
-      <label><span id="tenantPhoneLabel">الهاتف</span><input id="tenantPhone" type="tel" /></label>
-      <label><span id="tenantEmailLabel">البريد الإلكتروني</span><input id="tenantEmail" type="email" /></label>
-      <label><span id="tenantRoomLabel">الغرفة</span><select id="tenantRoom" required></select></label>
-      <label><span id="tenantStartLabel">بداية الإيجار</span><input id="tenantStart" type="date" required /></label>
-      <label><span id="tenantEndLabel">نهاية الإيجار</span><input id="tenantEnd" type="date" /></label>
-      <label><span id="tenantDepositLabel">التأمين</span><input id="tenantDeposit" type="number" min="0" step="0.01" /></label>
-      <label><span id="tenantDueDayLabel">يوم استحقاق الإيجار شهريًا</span><input id="tenantDueDay" type="number" min="1" max="31" /></label>
-      <label><span id="tenantNotesLabel">ملاحظات</span><textarea id="tenantNotes"></textarea></label>
-      <div class="dialog-actions">
-        <button type="button" class="secondary" id="cancelTenant">إلغاء</button>
-        <button value="default" class="primary" id="saveTenant">حفظ</button>
-      </div>
-    </form>
-  </dialog>
+<dialog id="paymentDialog"><form id="paymentForm">
+  <h3>إضافة دفعة</h3>
+  <label>المستأجر<select id="paymentTenant" required></select></label>
+  <label>المبلغ<input id="paymentAmount" type="number" min="0" step=".01" required></label>
+  <label>التاريخ<input id="paymentDate" type="date" required></label>
+  <label>طريقة الدفع<select id="paymentMethod"><option>Cash</option><option>Zelle</option><option>Venmo</option><option>Check</option><option>Other</option></select></label>
+  <label>ملاحظة<input id="paymentNote"></label>
+  <div class="dialog-actions"><button type="button" class="secondary cancel">إلغاء</button><button class="primary">حفظ</button></div>
+</form></dialog>
 
-  <dialog id="paymentDialog">
-    <form method="dialog" id="paymentForm">
-      <h3 id="paymentDialogTitle">إضافة دفعة</h3>
-      <label><span id="paymentTenantLabel">المستأجر</span><select id="paymentTenant" required></select></label>
-      <label><span id="paymentAmountLabel">المبلغ</span><input id="paymentAmount" type="number" min="0" step="0.01" required /></label>
-      <label><span id="paymentDateLabel">التاريخ</span><input id="paymentDate" type="date" required /></label>
-      <label><span id="paymentMethodLabel">طريقة الدفع</span>
-        <select id="paymentMethod">
-          <option value="Cash">Cash</option><option value="Zelle">Zelle</option>
-          <option value="Venmo">Venmo</option><option value="Check">Check</option>
-          <option value="Other">Other</option>
-        </select>
-      </label>
-      <label><span id="paymentNoteLabel">ملاحظة</span><input id="paymentNote" /></label>
-      <div class="dialog-actions">
-        <button type="button" class="secondary" id="cancelPayment">إلغاء</button>
-        <button value="default" class="primary" id="savePayment">حفظ</button>
-      </div>
-    </form>
-  </dialog>
+<dialog id="expenseDialog"><form id="expenseForm">
+  <h3>إضافة مصروف</h3><input id="expenseId" type="hidden">
+  <label>الجدول<select id="expenseOwner"><option>Aladdin</option><option>Ahmad</option></select></label>
+  <label>Name<input id="expenseName" required></label><label>Amount<input id="expenseAmount" type="number" min="0" step=".01" required></label>
+  <label>Date<input id="expenseDate" type="date" required></label><label>Note<textarea id="expenseNote"></textarea></label>
+  <div class="dialog-actions"><button type="button" class="secondary cancel">إلغاء</button><button class="primary">حفظ</button></div>
+</form></dialog>
 
+<dialog id="ledgerDialog"><form id="ledgerForm">
+  <h3>إضافة سجل</h3><input id="ledgerId" type="hidden">
+  <label>الجدول<select id="ledgerOwner"><option>Aladdin</option><option>Ahmad</option></select></label>
+  <label>Name<input id="ledgerName" required></label><label>Amount<input id="ledgerAmount" type="number" min="0" step=".01" required></label>
+  <label>Date<input id="ledgerDate" type="date" required></label><label>Note<textarea id="ledgerNote"></textarea></label>
+  <div class="dialog-actions"><button type="button" class="secondary cancel">إلغاء</button><button class="primary">حفظ</button></div>
+</form></dialog>
 
-  <dialog id="ledgerDialog">
-    <form method="dialog" id="ledgerForm">
-      <h3 id="ledgerDialogTitle">إضافة سجل</h3>
-      <input type="hidden" id="ledgerEntryId" />
-      <label><span id="ledgerOwnerLabel">الجدول</span>
-        <select id="ledgerOwner"><option>Aladdin</option><option>Ahmad</option></select>
-      </label>
-      <label><span id="ledgerNameLabel">Name</span><input id="ledgerName" required /></label>
-      <label><span id="ledgerAmountLabel">Amount</span><input id="ledgerAmount" type="number" min="0" step="0.01" required /></label>
-      <label><span id="ledgerDateLabel">Date</span><input id="ledgerDate" type="date" required /></label>
-      <label><span id="ledgerNoteLabel">Note</span><textarea id="ledgerNote"></textarea></label>
-      <div class="dialog-actions">
-        <button type="button" class="secondary" id="cancelLedger">إلغاء</button>
-        <button value="default" class="primary" id="saveLedger">حفظ</button>
-      </div>
-    </form>
-  </dialog>
-
-  <div id="toast" class="toast"></div>
-  <script src="app.js"></script>
+<div id="toast" class="toast"></div>
+<script src="firebase-config.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
