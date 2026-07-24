@@ -1,12 +1,12 @@
-Rental Manager V8.1
+Rental Manager V8.4
 
 New in this version:
-- Tenant details page/dialog.
-- Monthly rent, paid amount, and remaining balance.
-- Full payment history for each tenant.
-- Email and emergency contact fields.
-- ID and contract attachments (1.5 MB maximum each).
-- Room transfer history.
-- Details button for active and archived tenants.
+- Real Firebase Firestore connection from Settings.
+- Automatic synchronization between phone and computer.
+- Manual cloud upload and download buttons.
+- Connection status and last synchronization time.
+- Local storage remains available when offline.
+- Financial dashboard and tenant details retained.
+- Backup export and restore retained.
 
-Upload all files to GitHub and replace the old files.
+Upload every file in this folder to GitHub and replace the old files.
