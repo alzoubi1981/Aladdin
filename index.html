@@ -23,8 +23,10 @@ main{max-width:1100px;margin:auto;padding:18px}.page{display:none}.page.active{d
 .table-wrap{overflow:auto;padding:0}.table-wrap table{width:100%;border-collapse:collapse;min-width:670px}.table-wrap th,.table-wrap td{padding:13px;border-bottom:1px solid var(--line);text-align:start}.table-wrap th{background:#f7f9fd;color:#475569;font-size:.8rem}.table-wrap tr:last-child td{border-bottom:0}
 .bottom-nav{position:fixed;z-index:30;bottom:0;left:0;right:0;display:flex;overflow-x:auto;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:7px max(8px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));box-shadow:0 -10px 30px rgba(15,23,42,.08)}.bottom-nav button{flex:1;min-width:70px;border:0;background:transparent;color:#778195;padding:5px}.bottom-nav button span{display:block;font-size:1.2rem}.bottom-nav button small{font-size:.67rem}.bottom-nav button.active{color:var(--blue)}
 dialog{border:0;border-radius:22px;padding:0;width:min(92vw,520px);box-shadow:0 30px 90px rgba(15,23,42,.28)}dialog::backdrop{background:rgba(15,23,42,.55);backdrop-filter:blur(4px)}dialog form{padding:22px;display:grid;gap:13px}dialog h3{margin:0 0 4px}label{display:grid;gap:6px;font-size:.86rem;color:#475569}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff;outline:none}textarea{min-height:85px;resize:vertical}.dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:5px}.toast{position:fixed;z-index:50;bottom:105px;left:50%;transform:translate(-50%,20px);background:#111827;color:#fff;padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
-.details-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.detail-box{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:12px}.detail-box span{display:block;color:var(--muted);font-size:.76rem;margin-bottom:4px}.detail-box strong{color:var(--navy)}.detail-wide{grid-column:1/-1}.attachment-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.attachment-row a{color:var(--blue);text-decoration:none;font-weight:700}.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mini-stats .detail-box{text-align:center}.tenant-card .name-link{border:0;background:transparent;padding:0;color:var(--navy);font-weight:800;font-size:1.05rem;cursor:pointer}.tenant-card .name-link:hover{text-decoration:underline}.section-title{margin:18px 0 8px;font-size:1rem;color:var(--navy)}.financial-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.house-summary{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.house-summary h3{margin:0 0 12px;color:var(--navy)}.summary-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line)}.summary-row:last-child{border-bottom:0}.positive{color:var(--success)}.negative{color:var(--danger)}.payment-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.small-btn{padding:7px 10px;border-radius:10px}.status-line{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.badge.warn{background:#fef3c7;color:#92400e}.badge.gray{background:#eef2f7;color:#475569}
-@media(max-width:760px){.financial-grid{grid-template-columns:1fr}.details-grid{grid-template-columns:1fr}.detail-wide{grid-column:auto}.mini-stats{grid-template-columns:1fr}main{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}.card-grid{grid-template-columns:1fr}.hero{padding:20px}.hero h2{font-size:1.15rem}.topbar{padding:13px 15px}.topbar h1{font-size:1.05rem}.sync-badge{display:none}}
+.details-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.detail-box{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:12px}.detail-box span{display:block;color:var(--muted);font-size:.76rem;margin-bottom:4px}.detail-box strong{color:var(--navy)}.detail-wide{grid-column:1/-1}.attachment-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.attachment-row a{color:var(--blue);text-decoration:none;font-weight:700}.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mini-stats .detail-box{text-align:center}.tenant-card .name-link{border:0;background:transparent;padding:0;color:var(--navy);font-weight:800;font-size:1.05rem;cursor:pointer}.tenant-card .name-link:hover{text-decoration:underline}.section-title{margin:18px 0 8px;font-size:1rem;color:var(--navy)}
+
+.finance-toolbar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:14px}.finance-toolbar label{min-width:190px}.finance-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}.finance-card{background:#fff;border:1px solid rgba(226,232,240,.9);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(15,23,42,.055)}.finance-card span{display:block;color:var(--muted);font-size:.78rem}.finance-card strong{display:block;font-size:1.35rem;margin-top:8px;color:var(--navy)}.finance-card.positive strong{color:var(--success)}.finance-card.negative strong{color:var(--danger)}.owner-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.owner-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.owner-card h3{margin:0 0 12px;color:var(--navy)}.owner-numbers{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.owner-numbers div{background:#f8fafc;border-radius:12px;padding:10px}.owner-numbers span{display:block;color:var(--muted);font-size:.72rem}.owner-numbers strong{display:block;margin-top:4px}.finance-table{margin-top:16px}.month-note{color:var(--muted);font-size:.8rem;margin-top:8px}
+@media(max-width:760px){.finance-grid{grid-template-columns:repeat(2,1fr)}.owner-summary{grid-template-columns:1fr}.owner-numbers{grid-template-columns:repeat(2,1fr)}.details-grid{grid-template-columns:1fr}.detail-wide{grid-column:auto}.mini-stats{grid-template-columns:1fr}main{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}.card-grid{grid-template-columns:1fr}.hero{padding:20px}.hero h2{font-size:1.15rem}.topbar{padding:13px 15px}.topbar h1{font-size:1.05rem}.sync-badge{display:none}}
 
 </style>
   <title>إدارة الإيجارات V8.2</title>
@@ -63,16 +65,11 @@ window.addEventListener("error", function(e){
     </div>
     <div class="stats">
       <article><span>الغرف المؤجرة</span><strong id="statOccupied">0</strong></article>
-      <article><span>الغرف الفارغة</span><strong id="statVacant">0</strong></article>
-      <article><span>الإيجار الشهري</span><strong id="statIncome">$0</strong></article>
-      <article><span>المحصل هذا الشهر</span><strong id="statCollected">$0</strong></article>
-      <article><span>المتبقي هذا الشهر</span><strong id="statOutstanding">$0</strong></article>
-      <article><span>مصاريف هذا الشهر</span><strong id="statExpenses">$0</strong></article>
-      <article><span>صافي هذا الشهر</span><strong id="statNet">$0</strong></article>
       <article><span>المستأجرون</span><strong id="statTenants">0</strong></article>
+      <article><span>الإيجار الشهري</span><strong id="statIncome">$0</strong></article>
+      <article><span>المصاريف</span><strong id="statExpenses">$0</strong></article>
     </div>
-    <div id="houseFinancials" class="financial-grid"></div>
-    <div class="panel" style="margin-top:16px">
+    <div class="panel">
       <div class="panel-head"><h2>التنبيهات</h2></div>
       <div id="alertsList" class="list"></div>
     </div>
@@ -137,6 +134,30 @@ window.addEventListener("error", function(e){
     </div>
   </section>
 
+
+  <section id="finance" class="page">
+    <div class="page-head"><div><small>الدخل والمصاريف حسب الشهر</small><h2>اللوحة المالية</h2></div></div>
+    <div class="panel finance-toolbar">
+      <label>اختر الشهر<input id="financeMonth" type="month"></label>
+      <button id="financeCurrentMonth" class="secondary" type="button">الشهر الحالي</button>
+    </div>
+    <div class="finance-grid">
+      <article class="finance-card"><span>الإيجار المتوقع</span><strong id="finExpected">$0</strong></article>
+      <article class="finance-card positive"><span>المحصل</span><strong id="finCollected">$0</strong></article>
+      <article class="finance-card negative"><span>المتبقي</span><strong id="finOutstanding">$0</strong></article>
+      <article class="finance-card negative"><span>المصاريف</span><strong id="finExpenses">$0</strong></article>
+      <article class="finance-card positive"><span>صافي الدخل</span><strong id="finNet">$0</strong></article>
+    </div>
+    <div id="financeOwners" class="owner-summary"></div>
+    <div class="panel finance-table">
+      <div class="panel-head"><h2>تفصيل المستأجرين</h2></div>
+      <div class="table-wrap">
+        <table><thead><tr><th>المستأجر</th><th>البيت</th><th>الغرفة</th><th>الإيجار</th><th>المدفوع</th><th>المتبقي</th></tr></thead><tbody id="financeTenantBody"></tbody></table>
+      </div>
+      <div class="month-note">يتم حساب الدفعات والمصاريف المسجلة في الشهر المختار فقط.</div>
+    </div>
+  </section>
+
   <section id="archive" class="page">
     <div class="page-head"><div><small>السجلات السابقة</small><h2>الأرشيف</h2></div></div>
     <div id="archiveList" class="list"></div>
@@ -160,6 +181,7 @@ window.addEventListener("error", function(e){
   <button data-page="tenants"><span>♙</span><small>المستأجرون</small></button>
   <button data-page="payments"><span>$</span><small>الدفعات</small></button>
   <button data-page="expenses"><span>−</span><small>المصاريف</small></button>
+  <button data-page="finance"><span>◉</span><small>المالية</small></button>
   <button data-page="ledgers"><span>▤</span><small>الجداول</small></button>
   <button data-page="archive"><span>◷</span><small>الأرشيف</small></button>
   <button data-page="settings"><span>⚙</span><small>الإعدادات</small></button>
@@ -194,7 +216,7 @@ window.addEventListener("error", function(e){
 </form></dialog>
 
 <dialog id="paymentDialog"><form id="paymentForm">
-  <h3 id="paymentDialogTitle">إضافة دفعة</h3><input id="paymentId" type="hidden">
+  <h3>إضافة دفعة</h3>
   <label>المستأجر<select id="paymentTenant" required></select></label>
   <label>المبلغ<input id="paymentAmount" type="number" min="0" step=".01" required></label>
   <label>التاريخ<input id="paymentDate" type="date" required></label>
@@ -237,7 +259,7 @@ const AHMAD_ROOMS=[
 ];
 const defaultState=()=>({rooms:AHMAD_ROOMS.map((name,i)=>({id:"ahmad-"+(i+1),house:"Ahmad",name,rent:0})),tenants:[],payments:[],expenses:[],ledgers:[],archive:[],roomHistory:[]});
 let state=load(),roomHouse="Aladdin",tenantHouse="Aladdin",expenseOwner="Aladdin",ledgerOwner="Aladdin";
-function load(){try{const raw={...defaultState(),...JSON.parse(localStorage.getItem(KEY)||"{}")};for(const k of ["rooms","tenants","payments","expenses","ledgers","archive","roomHistory"])if(!Array.isArray(raw[k]))raw[k]=[];return raw}catch{return defaultState()}}
+function load(){try{return {...defaultState(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return defaultState()}}
 function save(){localStorage.setItem(KEY,JSON.stringify(state));renderAll();scheduleCloudSave()}
 const uid=()=>crypto.randomUUID?.()||Date.now()+"-"+Math.random();
 const money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(n||0));
@@ -251,18 +273,14 @@ function fileToData(file){return new Promise((resolve,reject)=>{if(!file)return 
 function attachmentLink(file,label){if(!file?.data)return `<span class="muted">لا يوجد ${label}</span>`;return `<div class="attachment-row"><span>${esc(file.name||label)}</span><a href="${file.data}" download="${esc(file.name||label)}">فتح / تنزيل</a></div>`}
 function tenantMonthSummary(t){const key=monthKey(),rent=Number(t.rent||roomById(t.roomId)?.rent||0),paid=state.payments.filter(p=>p.tenantId===t.id&&monthKey(p.date)===key).reduce((s,p)=>s+Number(p.amount||0),0);return {rent,paid,balance:Math.max(0,rent-paid)}}
 
-function renderAll(){renderDashboard();renderRooms();renderTenants();renderPayments();renderExpenses();renderLedgers();renderArchive();fillPaymentTenants()}
+function renderAll(){renderDashboard();renderRooms();renderTenants();renderPayments();renderExpenses();renderLedgers();renderFinance();renderArchive();fillPaymentTenants()}
 function renderDashboard(){
- const key=monthKey();
- const monthly=state.tenants.reduce((sum,t)=>sum+Number(t.rent||roomById(t.roomId)?.rent||0),0);
- const collected=state.payments.filter(p=>monthKey(p.date)===key).reduce((sum,p)=>sum+Number(p.amount||0),0);
- const expenses=state.expenses.filter(x=>monthKey(x.date)===key).reduce((sum,x)=>sum+Number(x.amount||0),0);
- const outstanding=Math.max(0,monthly-collected),net=collected-expenses;
- const vacant=state.rooms.filter(r=>!tenantByRoom(r.id)).length;
- $("#statOccupied").textContent=state.tenants.length;$("#statVacant").textContent=vacant;$("#statTenants").textContent=state.tenants.length;$("#statIncome").textContent=money(monthly);$("#statCollected").textContent=money(collected);$("#statOutstanding").textContent=money(outstanding);$("#statExpenses").textContent=money(expenses);$("#statNet").textContent=money(net);$("#statNet").className=net<0?"negative":"positive";
- $("#houseFinancials").innerHTML=["Aladdin","Ahmad"].map(house=>{const tenantIds=state.tenants.filter(t=>roomById(t.roomId)?.house===house).map(t=>t.id);const rent=state.tenants.filter(t=>tenantIds.includes(t.id)).reduce((sum,t)=>sum+Number(t.rent||roomById(t.roomId)?.rent||0),0);const paid=state.payments.filter(p=>tenantIds.includes(p.tenantId)&&monthKey(p.date)===key).reduce((sum,p)=>sum+Number(p.amount||0),0);const exp=state.expenses.filter(x=>x.owner===house&&monthKey(x.date)===key).reduce((sum,x)=>sum+Number(x.amount||0),0);const balance=Math.max(0,rent-paid),houseNet=paid-exp;return `<article class="house-summary"><h3>${house}</h3><div class="summary-row"><span>الإيجار المتوقع</span><strong>${money(rent)}</strong></div><div class="summary-row"><span>المحصل</span><strong>${money(paid)}</strong></div><div class="summary-row"><span>المتبقي</span><strong class="${balance?"negative":"positive"}">${money(balance)}</strong></div><div class="summary-row"><span>المصاريف</span><strong>${money(exp)}</strong></div><div class="summary-row"><span>الصافي</span><strong class="${houseNet<0?"negative":"positive"}">${money(houseNet)}</strong></div></article>`}).join("");
+ const monthly=state.tenants.reduce((s,t)=>s+Number(t.rent||roomById(t.roomId)?.rent||0),0);
+ const expenses=state.expenses.reduce((s,x)=>s+Number(x.amount||0),0);
+ $("#statOccupied").textContent=state.tenants.length;$("#statTenants").textContent=state.tenants.length;$("#statIncome").textContent=money(monthly);$("#statExpenses").textContent=money(expenses);
  const now=new Date();now.setHours(0,0,0,0);const tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);const alerts=[];
- state.tenants.forEach(t=>{const r=roomById(t.roomId);if(t.end){const end=new Date(t.end+"T12:00:00");end.setHours(0,0,0,0);const d=Math.round((end-now)/86400000);if(d>=0&&d<=30)alerts.push(`${t.name} — ${r?.name||""}: تبقى ${d} يومًا على نهاية العقد`)}const due=Number(t.dueDay||1),last=new Date(tomorrow.getFullYear(),tomorrow.getMonth()+1,0).getDate();if(Math.min(due,last)===tomorrow.getDate())alerts.push(`${t.name} — ${r?.name||""}: الإيجار مستحق غدًا`);const sum=tenantMonthSummary(t);if(sum.balance>0&&now.getDate()>=Math.min(Number(t.dueDay||1),new Date(now.getFullYear(),now.getMonth()+1,0).getDate()))alerts.push(`${t.name} — متبقي ${money(sum.balance)} لهذا الشهر`)});
+ state.tenants.forEach(t=>{const r=roomById(t.roomId);if(t.end){const end=new Date(t.end+"T12:00:00");end.setHours(0,0,0,0);const d=Math.round((end-now)/86400000);if(d===30)alerts.push(`${t.name} — ${r?.name||""}: تبقى 30 يومًا على نهاية العقد`)}
+ const due=Number(t.dueDay||1),last=new Date(tomorrow.getFullYear(),tomorrow.getMonth()+1,0).getDate();if(Math.min(due,last)===tomorrow.getDate())alerts.push(`${t.name} — ${r?.name||""}: الإيجار مستحق غدًا`)});
  $("#alertsList").innerHTML=alerts.length?alerts.map(a=>`<div class="list-item"><div>${esc(a)}</div></div>`).join(""):`<div class="empty">لا توجد تنبيهات حاليًا</div>`;
 }
 function renderRooms(){
@@ -276,13 +294,33 @@ function renderTenants(){
 }
 function renderPayments(){
  const rows=[...state.payments].sort((a,b)=>b.date.localeCompare(a.date));
- $("#paymentsList").innerHTML=rows.length?rows.map(p=>{const t=state.tenants.find(x=>x.id===p.tenantId)||state.archive.find(x=>x.id===p.tenantId);return `<div class="list-item"><div><strong>${esc(t?.name||"مستأجر")}</strong><div class="meta">${esc(p.date)} · ${esc(p.method||"")} · ${esc(p.note||"")}</div></div><div class="payment-actions"><strong>${money(p.amount)}</strong><button class="secondary small-btn" onclick="editPayment('${p.id}')">تعديل</button><button class="danger small-btn" onclick="deletePayment('${p.id}')">حذف</button></div></div>`}).join(""):`<div class="empty">لا توجد دفعات</div>`;
+ $("#paymentsList").innerHTML=rows.length?rows.map(p=>{const t=state.tenants.find(x=>x.id===p.tenantId)||state.archive.find(x=>x.id===p.tenantId);return `<div class="list-item"><div><strong>${esc(t?.name||"مستأجر")}</strong><div class="meta">${p.date} · ${esc(p.method)} · ${esc(p.note||"")}</div></div><strong>${money(p.amount)}</strong></div>`}).join(""):`<div class="empty">لا توجد دفعات</div>`;
 }
 function renderTable(kind,owner,bodyId){
  const rows=state[kind].filter(x=>x.owner===owner).sort((a,b)=>b.date.localeCompare(a.date));
- $(bodyId).innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.name)}</td><td>${money(x.amount)}</td><td>${x.date}</td><td>${esc(x.note||"")}</td><td><div class="payment-actions"><button class="secondary small-btn" onclick="editRow('${kind}','${x.id}')">تعديل</button><button class="danger small-btn" onclick="deleteRow('${kind}','${x.id}')">حذف</button></div></td></tr>`).join(""):`<tr><td colspan="5" class="empty">لا توجد سجلات</td></tr>`;
+ $(bodyId).innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.name)}</td><td>${money(x.amount)}</td><td>${x.date}</td><td>${esc(x.note||"")}</td><td><button class="danger" onclick="deleteRow('${kind}','${x.id}')">حذف</button></td></tr>`).join(""):`<tr><td colspan="5" class="empty">لا توجد سجلات</td></tr>`;
 }
 function renderExpenses(){renderTable("expenses",expenseOwner,"#expenseBody")}
+
+function financeForOwner(owner,key){
+ const tenants=state.tenants.filter(t=>roomById(t.roomId)?.house===owner);
+ const expected=tenants.reduce((sum,t)=>sum+Number(t.rent||roomById(t.roomId)?.rent||0),0);
+ const tenantIds=new Set(tenants.map(t=>t.id));
+ const collected=state.payments.filter(p=>tenantIds.has(p.tenantId)&&monthKey(p.date)===key).reduce((sum,p)=>sum+Number(p.amount||0),0);
+ const expenses=state.expenses.filter(x=>x.owner===owner&&monthKey(x.date)===key).reduce((sum,x)=>sum+Number(x.amount||0),0);
+ return {tenants,expected,collected,outstanding:Math.max(0,expected-collected),expenses,net:collected-expenses};
+}
+function renderFinance(){
+ const input=$("#financeMonth");if(!input)return;if(!input.value)input.value=monthKey();const key=input.value;
+ const owners=["Aladdin","Ahmad"],summaries=owners.map(owner=>({owner,...financeForOwner(owner,key)}));
+ const total=summaries.reduce((a,x)=>({expected:a.expected+x.expected,collected:a.collected+x.collected,outstanding:a.outstanding+x.outstanding,expenses:a.expenses+x.expenses,net:a.net+x.net}),{expected:0,collected:0,outstanding:0,expenses:0,net:0});
+ $("#finExpected").textContent=money(total.expected);$("#finCollected").textContent=money(total.collected);$("#finOutstanding").textContent=money(total.outstanding);$("#finExpenses").textContent=money(total.expenses);$("#finNet").textContent=money(total.net);
+ $("#finNet").parentElement.classList.toggle("negative",total.net<0);$("#finNet").parentElement.classList.toggle("positive",total.net>=0);
+ $("#financeOwners").innerHTML=summaries.map(x=>`<article class="owner-card"><h3>${x.owner}</h3><div class="owner-numbers"><div><span>الإيجار المتوقع</span><strong>${money(x.expected)}</strong></div><div><span>المحصل</span><strong>${money(x.collected)}</strong></div><div><span>المتبقي</span><strong>${money(x.outstanding)}</strong></div><div><span>المصاريف</span><strong>${money(x.expenses)}</strong></div><div><span>صافي الدخل</span><strong>${money(x.net)}</strong></div><div><span>عدد المستأجرين</span><strong>${x.tenants.length}</strong></div></div></article>`).join("");
+ const rows=state.tenants.map(t=>{const r=roomById(t.roomId),rent=Number(t.rent||r?.rent||0),paid=state.payments.filter(p=>p.tenantId===t.id&&monthKey(p.date)===key).reduce((sum,p)=>sum+Number(p.amount||0),0);return {t,r,rent,paid,balance:Math.max(0,rent-paid)}});
+ $("#financeTenantBody").innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.t.name)}</td><td>${esc(x.r?.house||"")}</td><td>${esc(x.r?.name||"")}</td><td>${money(x.rent)}</td><td>${money(x.paid)}</td><td>${money(x.balance)}</td></tr>`).join(""):`<tr><td colspan="6" class="empty">لا يوجد مستأجرون</td></tr>`;
+}
+
 function renderLedgers(){renderTable("ledgers",ledgerOwner,"#ledgerBody")}
 function renderArchive(){$("#archiveList").innerHTML=state.archive.length?state.archive.map(t=>`<div class="list-item"><div><strong>${esc(t.name)}</strong><div class="meta">${esc(t.roomName||"")} · ${t.end||""}</div></div><button class="secondary" onclick="showTenantDetails('${t.id}')">التفاصيل</button></div>`).join(""):`<div class="empty">الأرشيف فارغ</div>`}
 function fillPaymentTenants(){$("#paymentTenant").innerHTML=state.tenants.map(t=>`<option value="${t.id}">${esc(t.name)} — ${esc(roomById(t.roomId)?.name||"")}</option>`).join("")}
@@ -322,10 +360,8 @@ window.showTenantDetails=id=>{const t=state.tenants.find(x=>x.id===id)||state.ar
 $("#closeDetailsBtn").onclick=()=>$("#tenantDetailsDialog").close();
 window.archiveTenant=id=>{if(!confirm("إنهاء هذا المستأجر ونقله إلى الأرشيف؟"))return;const t=state.tenants.find(x=>x.id===id),r=roomById(t.roomId);state.archive.push({...t,roomName:r?.name,end:t.end||today()});state.tenants=state.tenants.filter(x=>x.id!==id);save()};
 
-$("#addPaymentBtn").onclick=()=>{$("#paymentForm").reset();$("#paymentId").value="";$("#paymentDialogTitle").textContent="إضافة دفعة";fillPaymentTenants();$("#paymentDate").value=today();$("#paymentDialog").showModal()};
-window.editPayment=id=>{const p=state.payments.find(x=>x.id===id);if(!p)return;$("#paymentForm").reset();fillPaymentTenants();$("#paymentId").value=p.id;$("#paymentDialogTitle").textContent="تعديل الدفعة";$("#paymentTenant").value=p.tenantId;$("#paymentAmount").value=p.amount;$("#paymentDate").value=p.date;$("#paymentMethod").value=p.method||"Cash";$("#paymentNote").value=p.note||"";$("#paymentDialog").showModal()};
-window.deletePayment=id=>{if(!confirm("حذف هذه الدفعة؟"))return;state.payments=state.payments.filter(x=>x.id!==id);save();toast("تم حذف الدفعة")};
-$("#paymentForm").onsubmit=e=>{e.preventDefault();const row={id:$("#paymentId").value||uid(),tenantId:$("#paymentTenant").value,amount:Number($("#paymentAmount").value),date:$("#paymentDate").value,method:$("#paymentMethod").value,note:$("#paymentNote").value.trim()};upsert("payments",row);$("#paymentDialog").close();save();toast("تم حفظ الدفعة")};
+$("#addPaymentBtn").onclick=()=>{$("#paymentForm").reset();fillPaymentTenants();$("#paymentDate").value=today();$("#paymentDialog").showModal()};
+$("#paymentForm").onsubmit=e=>{e.preventDefault();state.payments.push({id:uid(),tenantId:$("#paymentTenant").value,amount:Number($("#paymentAmount").value),date:$("#paymentDate").value,method:$("#paymentMethod").value,note:$("#paymentNote").value.trim()});$("#paymentDialog").close();save();toast("تم حفظ الدفعة")};
 
 function openExpense(id=""){const x=state.expenses.find(v=>v.id===id);$("#expenseId").value=x?.id||"";$("#expenseOwner").value=x?.owner||expenseOwner;$("#expenseName").value=x?.name||"";$("#expenseAmount").value=x?.amount||"";$("#expenseDate").value=x?.date||today();$("#expenseNote").value=x?.note||"";$("#expenseDialog").showModal()}
 $("#addExpenseBtn").onclick=()=>openExpense();
@@ -335,14 +371,14 @@ function openLedger(id=""){const x=state.ledgers.find(v=>v.id===id);$("#ledgerId
 $("#addLedgerBtn").onclick=()=>openLedger();
 $("#ledgerForm").onsubmit=e=>{e.preventDefault();upsert("ledgers",{id:$("#ledgerId").value||uid(),owner:$("#ledgerOwner").value,name:$("#ledgerName").value.trim(),amount:Number($("#ledgerAmount").value),date:$("#ledgerDate").value,note:$("#ledgerNote").value.trim()});ledgerOwner=$("#ledgerOwner").value;$("#ledgerDialog").close();save();toast("تم حفظ السجل")};
 function upsert(kind,row){const i=state[kind].findIndex(x=>x.id===row.id);i>=0?state[kind][i]=row:state[kind].push(row)}
-window.editRow=(kind,id)=>{if(kind==="expenses")openExpense(id);else if(kind==="ledgers")openLedger(id)};
-window.deleteRow=(kind,id)=>{if(confirm("حذف السجل؟")){state[kind]=state[kind].filter(x=>x.id!==id);save();toast("تم حذف السجل")}};
+window.deleteRow=(kind,id)=>{if(confirm("حذف السجل؟")){state[kind]=state[kind].filter(x=>x.id!==id);save()}};
 
 $$("dialog .cancel").forEach(b=>b.onclick=()=>b.closest("dialog").close());
 $$(".bottom-nav button").forEach(b=>b.onclick=()=>{$$(".bottom-nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".page").forEach(p=>p.classList.remove("active"));$("#"+b.dataset.page).classList.add("active");window.scrollTo({top:0,behavior:"smooth"})});
 function tabHandler(container,key,cb){$(container).onclick=e=>{const b=e.target.closest("button");if(!b)return;$$(container+" button").forEach(x=>x.classList.toggle("active",x===b));cb(b.dataset[key])}}
 tabHandler("#roomHouseTabs","house",v=>{roomHouse=v;renderRooms()});tabHandler("#tenantHouseTabs","house",v=>{tenantHouse=v;renderTenants()});tabHandler("#expenseTabs","owner",v=>{expenseOwner=v;renderExpenses()});tabHandler("#ledgerTabs","owner",v=>{ledgerOwner=v;renderLedgers()});
 $("#roomSearch").oninput=renderRooms;$("#tenantSearch").oninput=renderTenants;
+$("#financeMonth").onchange=renderFinance;$("#financeCurrentMonth").onclick=()=>{$("#financeMonth").value=monthKey();renderFinance()};
 
 $("#exportBtn").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="rental-backup-"+today()+".json";a.click()};
 $("#importInput").onchange=async e=>{try{state={...defaultState(),...JSON.parse(await e.target.files[0].text())};save();toast("تمت الاستعادة")}catch{toast("الملف غير صالح")}};
